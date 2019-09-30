@@ -2,7 +2,7 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="untitled" targetName="untitled" />
+      <config projectName="TestClock" targetName="TestClock" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -11,7 +11,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77748025-b7dc-491f-91ea-d74b905ffdef" name="Default Changelist" comment="" />
+    <list default="true" id="f13ef835-9976-44e7-9258-200a01d33de2" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +22,10 @@
     <option name="formatViaClangd" value="false" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
-  <component name="ProjectId" id="1RJucSPwglK43oxYiwbgy8jbEBW" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1RM13h8jYoJBkKCqpGkJx0DR44L" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -45,7 +48,7 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="untitled" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="untitled" TARGET_NAME="untitled" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="untitled" RUN_TARGET_NAME="untitled">
+    <configuration name="TestClock" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TestClock" TARGET_NAME="TestClock" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TestClock" RUN_TARGET_NAME="TestClock">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -56,12 +59,18 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="77748025-b7dc-491f-91ea-d74b905ffdef" name="Default Changelist" comment="" />
-      <created>1569397598108</created>
+      <changelist id="f13ef835-9976-44e7-9258-200a01d33de2" name="Default Changelist" comment="" />
+      <created>1569461953261</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1569397598108</updated>
-      <workItem from="1569397599413" duration="3681000" />
+      <updated>1569461953261</updated>
+      <workItem from="1569461954882" duration="804000" />
+      <workItem from="1569642718709" duration="982000" />
+      <workItem from="1569650992461" duration="282000" />
+      <workItem from="1569652531102" duration="265000" />
+      <workItem from="1569652829469" duration="251000" />
+      <workItem from="1569653087425" duration="5000" />
+      <workItem from="1569653097038" duration="10055000" />
     </task>
     <servers />
   </component>

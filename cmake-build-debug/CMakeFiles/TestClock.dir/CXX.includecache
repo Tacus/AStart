@@ -6,13 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/Users/zhangguobing/CLionProjects/untitled/main.cpp
+/Users/zhangguobing/develop/workspace/workspace_c++/TestClock/main.cpp
 iostream
 -
 vector
 -
 cstdlib
--
-time.h
 -
 
