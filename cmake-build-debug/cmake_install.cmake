@@ -1,4 +1,4 @@
-# Install script for directory: /Users/zhangguobing/develop/workspace/workspace_c++/TestClock
+# Install script for directory: /Users/zhangguobing/develop/workspace/workspace_c++/AStart
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/zhangguobing/develop/workspace/workspace_c++/TestClock/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/zhangguobing/develop/workspace/workspace_c++/AStart/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
