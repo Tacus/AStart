@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/ganicus/develop/workspace/workspace_git/AStart/main.cpp
+iostream
+-
+vector
+-
+cstdlib
+-
+math.h
+-
+

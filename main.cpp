@@ -24,16 +24,6 @@ public:
         *r = temp;
     }
 
-    void initSort(int start, int end) {
-        int childNode = 2 * start + 1;
-        int parentNode = start;
-        if (childNode + 1 <= end && m_container[childNode] < m_container[parentNode + 1])
-            ++childNode;
-        if (m_container[childNode] < m_container[parentNode]) {
-            swap(&m_container[childNode], &m_container[parentNode]);
-        }
-    }
-
     void sortup(int start, int end) {
         int childNode = 2 * start + 1;
         int parentNode = start;
@@ -73,7 +63,7 @@ public:
     }
 
     bool isEmpty() {
-        return 0 != m_container.size();
+        return 0 == m_container.size();
     }
 
     T extract() {
@@ -85,15 +75,23 @@ public:
         return value;
     }
 
+    void resort()
+    {
+        int len = m_container.size();
+        for (int i = len / 2 - 1; i >= 0; --i) {
+            sortdown(i, len - 1);
+        }
+    }
+
     bool find(T &t) {
         typename std::vector<T>::iterator it;
-        it = find_if(m_container.begin(), m_container.end(), [](T const &obj) { return t.x == obj.x && t.y == obj.y; });
+        it = find_if(m_container.begin(), m_container.end(), [t](T const &obj) { return t.x == obj.x && t.y == obj.y; });
         return it != m_container.end();
     }
 
     T* find(int x, int y) {
         typename std::vector<T>::iterator it;
-        it = find_if(m_container.begin(), m_container.end(), [](T const &obj) { return x == obj.x && y == obj.y });
+        it = find_if(m_container.begin(), m_container.end(), [x,y](T const &obj) { return x == obj.x && y == obj.y; });
         return it != m_container.end()?it.base():NULL;
     }
 };
@@ -101,14 +99,13 @@ public:
 template<class T>
 void MinHeap<T>::buildHeap(std::vector<T> &v) {
     m_container = v;
-    int len = m_container.size();
-    for (int i = len / 2 - 1; i >= 0; --i) {
-        sortdown(i, len - 1);
-    }
+    resort();
 }
 
 
 struct Point {
+
+    Point(){}
     Point(int x, int y, float g, float f,const Point* father) {
         this->x = x;
         this->y = y;
@@ -129,11 +126,11 @@ struct Point {
     const Point* father;
 
     bool operator==(const Point b) const {
-        return this->f == b.f;
+        return this->x == b.x && this->y == b.y;
     }
 
     bool operator!=(const Point b) const {
-        return this->f != b.f;
+        return this->x != b.x || this->y != b.y;
     }
 
     bool operator<=(const Point b) const {
@@ -160,30 +157,53 @@ private:
     Point m_StartPoint, m_EndPoint;
     int minx,maxx,miny,maxy;
 public:
-    void construct(vector<int, int> &set, Point &startPoint, Point &endPoint) {
+    AStart( Point &startPoint, Point &endPoint) {
         m_StartPoint = startPoint;
-        m_EndPoint = m_EndPoint;
+        m_EndPoint = endPoint;
     }
 
-    void StartFind() {
+    AStart(int startx,int starty,int endx,int endy) {
+        m_StartPoint = Point(startx,starty,0,0,NULL);
+        m_EndPoint = Point(endx,endy,0,0,NULL);
+    }
+
+    void initSize(int minx,int maxx,int miny,int maxy)
+    {
+        this->minx = minx;
+        this->maxx = maxx;
+        this->miny = miny;
+        this->maxy = maxy;
+    }
+
+    void startFind() {
         openList.insert(m_StartPoint);
         while (!openList.isEmpty()) {
             Point cur = openList.extract();
             closeList.push_back(cur);
             if (cur == m_EndPoint)
-                return;
+                break;
             addNeighbor(&cur);
+        }
+        printPath();
+    }
+
+//    bool canWalkable(const Point point) {
+//
+//        return true;
+//    }
+
+//    TODO
+    bool printPath() {
+        const Point* path = &m_EndPoint;
+        while(NULL != path)
+        {
+            printf("(%d,%d)->",path->x,path->y);
+            path = path->father;
         }
     }
 
-    bool canWalkable(const Point point) {
-
-        return true;
-    }
-
-//    TODO
     bool canWalkable(int x, int y) {
-        return (x + y) % 7 == 0;
+        return (x) % 2 == 0 || (x) % 3 == 0 || (y) % 7 == 0;
     }
 
     void addNeighbor(const Point* currentPoint) {
@@ -192,89 +212,57 @@ public:
         tryAddRight(currentPoint);
         tryAddUp(currentPoint);
         tryAddDown(currentPoint);
+
+        // 可以加斜角走
     }
 
-    void tryAddLeft(const Point* currentPoint)
+    bool tryAddLeft(const Point* currentPoint)
     {
         int x = currentPoint->x - 1;
         int y = currentPoint->y;
-        if (x >= minx && canWalkable(x, y) && !hasAddedCloseList(x, y)) {
-            Point* value = hasAddedOpenList(x, y);
-            if (NULL != value) {
-                int newweight = currentPoint->g+leftweight;
-                if(newweight < value->g)
-                {
-                    float f = currentPoint->g+leftweight + pow(m_EndPoint.x - x,2)+pow(m_EndPoint.y - y,2);
-                    value->update(newweight,f, currentPoint);
-                }
-            } else {
-                float f = currentPoint->g+leftweight + pow(m_EndPoint.x - x,2)+pow(m_EndPoint.y - y,2);
-                Point *point = new Point(x, y, leftweight,f,currentPoint);
-                openList.insert(*point);
-            }
-        }
+        return tryAddPoint(x,y,currentPoint,leftweight);
     }
-    void tryAddRight(const Point* currentPoint)
+    bool tryAddRight(const Point* currentPoint)
     {
         int x = currentPoint->x + 1;
         int y = currentPoint->y;
-        if (x <= maxx && canWalkable(x, y) && !hasAddedCloseList(x, y)) {
-            Point* value = hasAddedOpenList(x, y);
-            if (NULL != value) {
-                int newweight = currentPoint->g+rightweight;
-                if(newweight < value->g)
-                {
-                    float f = currentPoint->g+rightweight + pow(m_EndPoint.x - x,2)+pow(m_EndPoint.y - y,2);
-                    value->update(newweight,f, currentPoint);
-                }
-            } else {
-                float f = currentPoint->g+rightweight + pow(m_EndPoint.x - x,2)+pow(m_EndPoint.y - y,2);
-                Point *point = new Point(x, y, rightweight,f,currentPoint);
-                openList.insert(*point);
-            }
-        }
+        return tryAddPoint(x,y,currentPoint,rightweight);
     }
 
-    void tryAddUp(const Point* currentPoint)
+    bool tryAddUp(const Point* currentPoint)
     {
         int x = currentPoint->x;
         int y = currentPoint->y - 1;
-        if (y >= miny && canWalkable(x, y) && !hasAddedCloseList(x, y)) {
-            Point* value = hasAddedOpenList(x, y);
-            if (NULL != value) {
-                int newweight = currentPoint->g+upweight;
-                if(newweight < value->g)
-                {
-                    float f = currentPoint->g+upweight + pow(m_EndPoint.x - x,2)+pow(m_EndPoint.y - y,2);
-                    value->update(newweight,f, currentPoint);
-                }
-            } else {
-                float f = currentPoint->g+upweight + pow(m_EndPoint.x - x,2)+pow(m_EndPoint.y - y,2);
-                Point *point = new Point(x, y, upweight,f,currentPoint);
-                openList.insert(*point);
-            }
-        }
+        return tryAddPoint(x,y,currentPoint,upweight);
     }
 
-    void tryAddDown(const Point* currentPoint)
+    bool tryAddDown(const Point* currentPoint)
     {
         int x = currentPoint->x;
         int y = currentPoint->y + 1;
-        if (y <= maxy && canWalkable(x, y) && !hasAddedCloseList(x, y)) {
+        return tryAddPoint(x,y,currentPoint,downweight);
+    }
+
+    bool tryAddPoint(int x, int y,const Point* currentPoint,float weight)
+    {
+        if(x == m_EndPoint.x && y == m_EndPoint.y) return true;
+        if(x > maxx || x < minx || y > maxy || y < miny) return false;
+        if (canWalkable(x, y) && !hasAddedCloseList(x, y)) {
             Point* value = hasAddedOpenList(x, y);
-            if (NULL != value) {
-                int newweight = currentPoint->g+downweight;
-                if(newweight < value->g)
-                {
-                    float f = currentPoint->g+downweight + pow(m_EndPoint.x - x,2)+pow(m_EndPoint.y - y,2);
-                    value->update(newweight,f, currentPoint);
-                }
-            } else {
-                float f = currentPoint->g+downweight + pow(m_EndPoint.x - x,2)+pow(m_EndPoint.y - y,2);
-                Point *point = new Point(x, y, downweight,f,currentPoint);
+            int newweight = currentPoint->g+weight;
+            float f = newweight+ pow(m_EndPoint.x - x,2)+pow(m_EndPoint.y - y,2);
+
+            if (NULL != value && newweight < value->g)
+            {
+                value->update(newweight,f, currentPoint);
+                openList.resort();
+            }
+            else {
+                Point *point = new Point(x, y, weight,f,currentPoint);
                 openList.insert(*point);
             }
         }
+        return false;
     }
 
     Point* hasAddedOpenList(int x, int y) {
@@ -287,26 +275,12 @@ public:
                 return true;
         }
     }
-
-//    void getPoint(int x,int y,)
-
-
-
 };
 
 int main(int argc, char const *argv[]) {
-    /* code */
-    std::vector<int> v;
-    srand(1);
-    int capacity = 1000000;
-
-    for (int i = 0; i < capacity; ++i) {
-        v.push_back(random(capacity));
-
-    }
-    MinHeap<int> min_heap;
-    min_heap.buildHeap(v);
-    cout << v.size() << endl;
+    AStart start = AStart(0,2,4,3);
+    start.initSize(0,4,0,4);
+    start.startFind();
     return 0;
 }
 
