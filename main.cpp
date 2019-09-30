@@ -204,7 +204,7 @@ public:
     }
 
     bool canWalkable(int x, int y) {
-        return (x) % 2 == 0 || (x) % 3 == 0 || (y) % 7 == 0;
+        return true;
     }
 
     void addNeighbor(const Point* currentPoint) {
@@ -217,37 +217,36 @@ public:
         // 可以加斜角走
     }
 
-    bool tryAddLeft(const Point* currentPoint)
+    void tryAddLeft(const Point* currentPoint)
     {
         int x = currentPoint->x - 1;
         int y = currentPoint->y;
-        return tryAddPoint(x,y,currentPoint,leftweight);
+        tryAddPoint(x,y,currentPoint,leftweight);
     }
-    bool tryAddRight(const Point* currentPoint)
+    void tryAddRight(const Point* currentPoint)
     {
         int x = currentPoint->x + 1;
         int y = currentPoint->y;
-        return tryAddPoint(x,y,currentPoint,rightweight);
+        tryAddPoint(x,y,currentPoint,rightweight);
     }
 
-    bool tryAddUp(const Point* currentPoint)
+    void tryAddUp(const Point* currentPoint)
     {
         int x = currentPoint->x;
         int y = currentPoint->y - 1;
-        return tryAddPoint(x,y,currentPoint,upweight);
+        tryAddPoint(x,y,currentPoint,upweight);
     }
 
-    bool tryAddDown(const Point* currentPoint)
+    void tryAddDown(const Point* currentPoint)
     {
         int x = currentPoint->x;
         int y = currentPoint->y + 1;
-        return tryAddPoint(x,y,currentPoint,downweight);
+        tryAddPoint(x,y,currentPoint,downweight);
     }
 
-    bool tryAddPoint(int x, int y,const Point* currentPoint,float weight)
+    void tryAddPoint(int x, int y,const Point* currentPoint,float weight)
     {
-        if(x == m_EndPoint.x && y == m_EndPoint.y) return true;
-        if(x > maxx || x < minx || y > maxy || y < miny) return false;
+        if(x >= maxx || x <= minx || y > maxy || y < miny) return;
         if (canWalkable(x, y) && !hasAddedCloseList(x, y)) {
             Point* value = hasAddedOpenList(x, y);
             int newweight = currentPoint->g+weight;
@@ -263,7 +262,6 @@ public:
                 openList.insert(*point);
             }
         }
-        return false;
     }
 
     Point* hasAddedOpenList(int x, int y) {
@@ -280,7 +278,7 @@ public:
 
 int main(int argc, char const *argv[]) {
     AStart start = AStart(0,2,4,3);
-    start.initSize(0,4,0,4);
+    start.initSize(0,5,0,5);
     start.startFind();
     return 0;
 }
