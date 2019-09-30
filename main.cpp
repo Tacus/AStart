@@ -188,11 +188,6 @@ public:
         printPath();
     }
 
-//    bool canWalkable(const Point point) {
-//
-//        return true;
-//    }
-
 //    TODO
     bool printPath() {
         const Point* path = &m_EndPoint;
@@ -246,7 +241,7 @@ public:
 
     void tryAddPoint(int x, int y,const Point* currentPoint,float weight)
     {
-        if(x >= maxx || x <= minx || y > maxy || y < miny) return;
+        if(x > maxx || x < minx || y > maxy || y < miny) return;
         if (canWalkable(x, y) && !hasAddedCloseList(x, y)) {
             Point* value = hasAddedOpenList(x, y);
             int newweight = currentPoint->g+weight;
@@ -278,7 +273,7 @@ public:
 
 int main(int argc, char const *argv[]) {
     AStart start = AStart(0,2,4,3);
-    start.initSize(0,5,0,5);
+    start.initSize(0,4,0,4);
     start.startFind();
     return 0;
 }
