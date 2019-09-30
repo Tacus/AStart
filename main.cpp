@@ -112,6 +112,7 @@ struct Point {
         this->g = g;
         this->f = f;
         this->father = father;
+        printf("create Point{%d,%d}\n",x,y);
     }
 
     void update(float g, float f,const Point* father)
@@ -257,7 +258,7 @@ public:
                 value->update(newweight,f, currentPoint);
                 openList.resort();
             }
-            else {
+            else if(NULL == value){
                 Point *point = new Point(x, y, weight,f,currentPoint);
                 openList.insert(*point);
             }
