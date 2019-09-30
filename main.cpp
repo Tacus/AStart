@@ -111,7 +111,6 @@ struct Point {
         this->g = g;
         this->f = f;
         this->father = father;
-        printf("create Point{%d,%d}\n",x,y);
     }
 
     void update(float g, float f,const Point* father)
@@ -180,8 +179,10 @@ public:
         while (!openList.isEmpty()) {
             Point cur = openList.extract();
             closeList.push_back(cur);
-            if (cur == m_EndPoint)
+            if (cur == m_EndPoint){
+                m_EndPoint = cur;
                 break;
+            }
             addNeighbor(&cur);
         }
         printPath();
