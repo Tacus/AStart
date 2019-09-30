@@ -66,13 +66,13 @@ public:
         return 0 == m_container.size();
     }
 
-    T extract() {
+    T* extract() {
         T value = m_container.front();
         int len = m_container.size();
         m_container[0] = m_container[len - 1];
         m_container.pop_back();
         sortdown(0, len - 2);
-        return value;
+        return &value;
     }
 
     void resort()
@@ -177,13 +177,13 @@ public:
     void startFind() {
         openList.insert(m_StartPoint);
         while (!openList.isEmpty()) {
-            Point cur = openList.extract();
-            closeList.push_back(cur);
-            if (cur == m_EndPoint){
-                m_EndPoint = cur;
+            Point* cur = openList.extract();
+            closeList.push_back(*cur);
+            if (*cur == m_EndPoint){
+                m_EndPoint = *cur;
                 break;
             }
-            addNeighbor(&cur);
+            addNeighbor(cur);
         }
         printPath();
     }
