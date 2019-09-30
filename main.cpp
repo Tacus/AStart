@@ -28,7 +28,7 @@ public:
         int childNode = 2 * start + 1;
         int parentNode = start;
         while (parentNode >= 0) {
-            if (childNode + 1 <= end && m_container[childNode] < m_container[parentNode + 1])
+            if (childNode + 1 <= end && m_container[childNode] > m_container[childNode + 1])
                 ++childNode;
             if (m_container[childNode] < m_container[parentNode]) {
                 swap(&m_container[childNode], &m_container[parentNode]);
@@ -44,7 +44,7 @@ public:
         int childNode = 2 * start + 1;
         int parentNode = start;
         while (childNode <= end) {
-            if (childNode + 1 <= end && m_container[childNode] < m_container[parentNode + 1])
+            if (childNode + 1 <= end && m_container[childNode] > m_container[childNode + 1])
                 ++childNode;
             if (m_container[childNode] < m_container[parentNode]) {
                 swap(&m_container[childNode], &m_container[parentNode]);
@@ -71,7 +71,7 @@ public:
         int len = m_container.size();
         m_container[0] = m_container[len - 1];
         m_container.pop_back();
-        sortdown(0, len - 1);
+        sortdown(0, len - 2);
         return value;
     }
 
@@ -102,7 +102,6 @@ void MinHeap<T>::buildHeap(std::vector<T> &v) {
     resort();
 }
 
-
 struct Point {
 
     Point(){}
@@ -123,7 +122,7 @@ struct Point {
     }
 
     int x, y;
-    float f, g, h;
+    float f, g;
     const Point* father;
 
     bool operator==(const Point b) const {
@@ -253,7 +252,11 @@ public:
                 openList.resort();
             }
             else if(NULL == value){
-                Point *point = new Point(x, y, weight,f,currentPoint);
+                Point *point = new Point(x, y, newweight,f,currentPoint);
+                if(x == m_EndPoint.x && y == m_EndPoint.y)
+                {
+                    int a = 1;
+                }
                 openList.insert(*point);
             }
         }
@@ -276,5 +279,23 @@ int main(int argc, char const *argv[]) {
     start.initSize(0,4,0,4);
     start.startFind();
     return 0;
+
+//    /* code */
+//    std::vector<int> v;
+//    srand(1);
+//    int capacity = 100;
+//
+//    for (int i = 0; i < capacity; ++i) {
+//        v.push_back(random(capacity));
+//    }
+//    MinHeap<int> min_heap;
+//    min_heap.buildHeap(v);
+//    while (!min_heap.isEmpty())
+//    {
+//        int value = min_heap.extract();
+//        printf("%d\n",value);
+//    }
+//
+//    return 0;
 }
 
