@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/TestClock.dir/main.cpp.o"
-  "TestClock.pdb"
   "TestClock"
+  "TestClock.pdb"
 )
 
 # Per-language clean rules from dependency scanning.
