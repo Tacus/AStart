@@ -66,13 +66,13 @@ public:
         return 0 == m_container.size();
     }
 
-    T* extract() {
+    T extract() {
         T value = m_container.front();
         int len = m_container.size();
         m_container[0] = m_container[len - 1];
         m_container.pop_back();
         sortdown(0, len - 2);
-        return &value;
+        return value;
     }
 
     void resort()
@@ -91,7 +91,7 @@ public:
 
     T* find(int x, int y) {
         typename std::vector<T>::iterator it;
-        it = find_if(m_container.begin(), m_container.end(), [x,y](T const &obj) { return x == obj.x && y == obj.y; });
+        it = find_if(m_container.begin(), m_container.end(), [x,y](T const &obj) { return x == obj->x && y == obj->y; });
         return it != m_container.end()?it.base():NULL;
     }
 };
@@ -151,19 +151,19 @@ struct Point {
 
 class AStart {
 private:
-    MinHeap<Point> openList;
-    vector<Point> closeList;
-    Point m_StartPoint, m_EndPoint;
+    MinHeap<Point*> openList;
+    vector<Point*> closeList;
+    Point* m_StartPoint, *m_EndPoint;
     int minx,maxx,miny,maxy;
 public:
-    AStart( Point &startPoint, Point &endPoint) {
+    AStart( Point* startPoint, Point* endPoint) {
         m_StartPoint = startPoint;
         m_EndPoint = endPoint;
     }
 
     AStart(int startx,int starty,int endx,int endy) {
-        m_StartPoint = Point(startx,starty,0,0,NULL);
-        m_EndPoint = Point(endx,endy,0,0,NULL);
+        m_StartPoint = new Point(startx,starty,0,0,NULL);
+        m_EndPoint = new Point(endx,endy,0,0,NULL);
     }
 
     void initSize(int minx,int maxx,int miny,int maxy)
@@ -178,9 +178,9 @@ public:
         openList.insert(m_StartPoint);
         while (!openList.isEmpty()) {
             Point* cur = openList.extract();
-            closeList.push_back(*cur);
-            if (*cur == m_EndPoint){
-                m_EndPoint = *cur;
+            closeList.push_back(cur);
+            if (*cur == *m_EndPoint){
+                m_EndPoint = cur;
                 break;
             }
             addNeighbor(cur);
@@ -190,7 +190,7 @@ public:
 
 //    TODO
     bool printPath() {
-        const Point* path = &m_EndPoint;
+        const Point* path = m_EndPoint;
         while(NULL != path)
         {
             printf("(%d,%d)->",path->x,path->y);
@@ -199,7 +199,9 @@ public:
     }
 
     bool canWalkable(int x, int y) {
-        return true;
+//        return true;
+        return (x) % 2 == 0 || (x) % 3 == 0 || (y) % 7 == 0;
+
     }
 
     void addNeighbor(const Point* currentPoint) {
@@ -245,7 +247,7 @@ public:
         if (canWalkable(x, y) && !hasAddedCloseList(x, y)) {
             Point* value = hasAddedOpenList(x, y);
             int newweight = currentPoint->g+weight;
-            float f = newweight+ pow(m_EndPoint.x - x,2)+pow(m_EndPoint.y - y,2);
+            float f = newweight+ pow(m_EndPoint->x - x,2)+pow(m_EndPoint->y - y,2);
 
             if (NULL != value && newweight < value->g)
             {
@@ -254,30 +256,32 @@ public:
             }
             else if(NULL == value){
                 Point *point = new Point(x, y, newweight,f,currentPoint);
-                if(x == m_EndPoint.x && y == m_EndPoint.y)
+                if(x == m_EndPoint->x && y == m_EndPoint->y)
                 {
                     int a = 1;
                 }
-                openList.insert(*point);
+                openList.insert(point);
             }
         }
     }
 
     Point* hasAddedOpenList(int x, int y) {
-        return openList.find(x, y);
+        Point** temp= openList.find(x, y);
+        if(temp == NULL) return NULL;
+        return *temp;
     }
 
     bool hasAddedCloseList(int x, int y) {
         for (int i = 0; i < closeList.size(); ++i) {
-            if (x == closeList[i].x && y == closeList[i].y)
+            if (x == closeList[i]->x && y == closeList[i]->y)
                 return true;
         }
     }
 };
 
 int main(int argc, char const *argv[]) {
-    AStart start = AStart(0,2,4,3);
-    start.initSize(0,4,0,4);
+    AStart start = AStart(0,2,4,99);
+    start.initSize(0,100,0,100);
     start.startFind();
     return 0;
 
