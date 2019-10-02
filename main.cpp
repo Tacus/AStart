@@ -10,100 +10,7 @@ using namespace std;
 #define downweight 1
 //假设地图为坡形，则前后左右可能weight不同
 
-
-template<class T>
-class MinHeap {
-private:
-    std::vector<T> m_container;
-public:
-    void buildHeap(std::vector<T> &v);
-
-    void swap(T *l, T *r) {
-        T temp = *l;
-        *l = *r;
-        *r = temp;
-    }
-
-    void sortup(int start, int end) {
-        int childNode = 2 * start + 1;
-        int parentNode = start;
-        while (parentNode >= 0) {
-            if (childNode + 1 <= end && m_container[childNode] > m_container[childNode + 1])
-                ++childNode;
-            if (m_container[childNode] < m_container[parentNode]) {
-                swap(&m_container[childNode], &m_container[parentNode]);
-                childNode = parentNode;
-                parentNode = (childNode - 1) / 2;
-            } else {
-                return;
-            }
-        }
-    }
-
-    void sortdown(int start, int end) {
-        int childNode = 2 * start + 1;
-        int parentNode = start;
-        while (childNode <= end) {
-            if (childNode + 1 <= end && m_container[childNode] > m_container[childNode + 1])
-                ++childNode;
-            if (m_container[childNode] < m_container[parentNode]) {
-                swap(&m_container[childNode], &m_container[parentNode]);
-                parentNode = childNode;
-                childNode = 2 * childNode + 1;
-            } else {
-                return;
-            }
-        }
-    }
-
-    void insert(T &value) {
-        m_container.push_back(value);
-        int len = m_container.size();
-        sortup(len / 2 - 1, len - 1);
-    }
-
-    bool isEmpty() {
-        return 0 == m_container.size();
-    }
-
-    T extract() {
-        T value = m_container.front();
-        int len = m_container.size();
-        m_container[0] = m_container[len - 1];
-        m_container.pop_back();
-        sortdown(0, len - 2);
-        return value;
-    }
-
-    void resort()
-    {
-        int len = m_container.size();
-        for (int i = len / 2 - 1; i >= 0; --i) {
-            sortdown(i, len - 1);
-        }
-    }
-
-    bool find(T &t) {
-        typename std::vector<T>::iterator it;
-        it = find_if(m_container.begin(), m_container.end(), [t](T const &obj) { return t.x == obj.x && t.y == obj.y; });
-        return it != m_container.end();
-    }
-
-    T* find(int x, int y) {
-        typename std::vector<T>::iterator it;
-        it = find_if(m_container.begin(), m_container.end(), [x,y](T const &obj) { return x == obj->x && y == obj->y; });
-        return it != m_container.end()?it.base():NULL;
-    }
-};
-
-template<class T>
-void MinHeap<T>::buildHeap(std::vector<T> &v) {
-    m_container = v;
-    resort();
-}
-
 struct Point {
-
     Point(){}
     Point(int x, int y, float g, float f,const Point* father) {
         this->x = x;
@@ -148,6 +55,133 @@ struct Point {
         return this->f > b.f;
     }
 };
+
+template<class T>
+class MinHeap {
+private:
+    std::vector<T> m_container;
+public:
+    void buildHeap(std::vector<T> &v);
+
+    void swap(T *l, T *r) {
+        T temp = *l;
+        *l = *r;
+        *r = temp;
+    }
+
+    void insert(T value) {
+        m_container.push_back(value);
+        int len = m_container.size();
+        sortup(len / 2 - 1, len - 1);
+    }
+
+    bool isEmpty() {
+        return 0 == m_container.size();
+    }
+
+    T extract() {
+        T value = m_container.front();
+        int len = m_container.size();
+        m_container[0] = m_container[len - 1];
+        m_container.pop_back();
+        sortdown(0, len - 2);
+        return value;
+    }
+
+    void resort()
+    {
+        int len = m_container.size();
+        for (int i = len / 2 - 1; i >= 0; --i) {
+            sortdown(i, len - 1);
+        }
+    }
+
+    bool find(T &t) {
+        typename std::vector<T>::iterator it;
+        it = find_if(m_container.begin(), m_container.end(), [t](T const &obj) { return t.x == obj.x && t.y == obj.y; });
+        return it != m_container.end();
+    }
+
+    T* find(int x, int y) {
+        typename std::vector<T>::iterator it;
+        it = find_if(m_container.begin(), m_container.end(), [x,y](T const &obj) { return x == obj->x && y == obj->y; });
+        return it != m_container.end()?it.base():NULL;
+    }
+
+    void sortup(int start, int end) {
+        int childNode = 2 * start + 1;
+        int parentNode = start;
+        while (parentNode >= 0) {
+            if (childNode + 1 <= end && m_container[childNode] > m_container[childNode + 1])
+                ++childNode;
+            if (m_container[childNode] < m_container[parentNode]) {
+                swap(&m_container[childNode], &m_container[parentNode]);
+                childNode = parentNode;
+                parentNode = (childNode - 1) / 2;
+            } else {
+                return;
+            }
+        }
+    }
+
+    void sortdown(int start, int end) {
+        int childNode = 2 * start + 1;
+        int parentNode = start;
+        while (childNode <= end) {
+            if (childNode + 1 <= end && m_container[childNode] > m_container[childNode + 1])
+                ++childNode;
+            if (m_container[childNode] < m_container[parentNode]) {
+                swap(&m_container[childNode], &m_container[parentNode]);
+                parentNode = childNode;
+                childNode = 2 * childNode + 1;
+            } else {
+                return;
+            }
+        }
+    }
+
+};
+
+template<class T>
+void MinHeap<T>::buildHeap(std::vector<T> &v) {
+    m_container = v;
+    resort();
+}
+
+
+template<> void MinHeap<Point*>::sortup(int start, int end) {
+    int childNode = 2 * start + 1;
+    int parentNode = start;
+    while (parentNode >= 0) {
+        if (childNode + 1 <= end && *m_container[childNode] > *m_container[childNode + 1])
+            ++childNode;
+        if (*m_container[childNode] < *m_container[parentNode]) {
+            swap(&m_container[childNode], &m_container[parentNode]);
+            childNode = parentNode;
+            parentNode = (childNode - 1) / 2;
+        } else {
+            return;
+        }
+    }
+}
+
+template<> void MinHeap<Point*>::sortdown(int start, int end) {
+    int childNode = 2 * start + 1;
+    int parentNode = start;
+    while (childNode <= end) {
+        if (childNode + 1 <= end && *m_container[childNode] > *m_container[childNode + 1])
+            ++childNode;
+        if (*m_container[childNode] < *m_container[parentNode]) {
+            swap(&m_container[childNode], &m_container[parentNode]);
+            parentNode = childNode;
+            childNode = 2 * childNode + 1;
+        } else {
+            return;
+        }
+    }
+}
+
+
 
 class AStart {
 private:
@@ -253,14 +287,12 @@ public:
             {
                 value->update(newweight,f, currentPoint);
                 openList.resort();
+                int a = 1;
             }
             else if(NULL == value){
                 Point *point = new Point(x, y, newweight,f,currentPoint);
-                if(x == m_EndPoint->x && y == m_EndPoint->y)
-                {
-                    int a = 1;
-                }
                 openList.insert(point);
+                int a = 1;
             }
         }
     }
@@ -280,10 +312,9 @@ public:
 };
 
 int main(int argc, char const *argv[]) {
-    AStart start = AStart(0,2,4,99);
-    start.initSize(0,100,0,100);
+    AStart start = AStart(3,2,911,111);
+    start.initSize(0,1000,0,1000);
     start.startFind();
-    return 0;
 
 //    /* code */
 //    std::vector<int> v;
