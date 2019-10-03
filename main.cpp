@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstdlib>
 #include <math.h>
+
 using namespace std;
 #define  random(t) rand()%t
 #define leftweight 1
@@ -11,8 +12,9 @@ using namespace std;
 //假设地图为坡形，则前后左右可能weight不同
 
 struct Point {
-    Point(){}
-    Point(int x, int y, float g, float f,const Point* father) {
+    Point() {}
+
+    Point(int x, int y, float g, float f, const Point *father) {
         this->x = x;
         this->y = y;
         this->g = g;
@@ -20,8 +22,7 @@ struct Point {
         this->father = father;
     }
 
-    void update(float g, float f,const Point* father)
-    {
+    void update(float g, float f, const Point *father) {
         this->g = g;
         this->f = f;
         this->father = father;
@@ -29,7 +30,7 @@ struct Point {
 
     int x, y;
     float f, g;
-    const Point* father;
+    const Point *father;
 
     bool operator==(const Point b) const {
         return this->x == b.x && this->y == b.y;
@@ -88,8 +89,7 @@ public:
         return value;
     }
 
-    void resort()
-    {
+    void resort() {
         int len = m_container.size();
         for (int i = len / 2 - 1; i >= 0; --i) {
             sortdown(i, len - 1);
@@ -98,14 +98,21 @@ public:
 
     bool find(T &t) {
         typename std::vector<T>::iterator it;
-        it = find_if(m_container.begin(), m_container.end(), [t](T const &obj) { return t.x == obj.x && t.y == obj.y; });
+        it = find_if(m_container.begin(), m_container.end(),
+                     [t](T const &obj) { return t.x == obj.x && t.y == obj.y; });
         return it != m_container.end();
     }
 
-    T* find(int x, int y) {
-        typename std::vector<T>::iterator it;
-        it = find_if(m_container.begin(), m_container.end(), [x,y](T const &obj) { return x == obj->x && y == obj->y; });
-        return it != m_container.end()?it.base():NULL;
+    T *find(int x, int y) {
+//        typename std::vector<T>::iterator it;
+//        it = find_if(m_container.begin(), m_container.end(), [x,y](T const &obj) { return x == obj->x && y == obj->y; });
+//        return it != m_container.end()?it.base():NULL;
+        for (int i = 0; i < m_container.size(); ++i) {
+            auto value = m_container[i];
+            if (*value->x == x && *value->y == y) {
+                return value;
+            }
+        }
     }
 
     void sortup(int start, int end) {
@@ -149,7 +156,8 @@ void MinHeap<T>::buildHeap(std::vector<T> &v) {
 }
 
 
-template<> void MinHeap<Point*>::sortup(int start, int end) {
+template<>
+void MinHeap<Point *>::sortup(int start, int end) {
     int childNode = 2 * start + 1;
     int parentNode = start;
     while (parentNode >= 0) {
@@ -165,7 +173,8 @@ template<> void MinHeap<Point*>::sortup(int start, int end) {
     }
 }
 
-template<> void MinHeap<Point*>::sortdown(int start, int end) {
+template<>
+void MinHeap<Point *>::sortdown(int start, int end) {
     int childNode = 2 * start + 1;
     int parentNode = start;
     while (childNode <= end) {
@@ -181,39 +190,75 @@ template<> void MinHeap<Point*>::sortdown(int start, int end) {
     }
 }
 
+template<>
+Point **MinHeap<Point *>::find(int x, int y) {
+//        typename std::vector<T>::iterator it;
+//        it = find_if(m_container.begin(), m_container.end(), [x,y](T const &obj) { return x == obj->x && y == obj->y; });
+//        return it != m_container.end()?it.base():NULL;
+    for (int i = 0; i < m_container.size(); ++i) {
+        Point *value = m_container[i];
+        if (value->x == x && value->y == y) {
+            return &value;
+        }
+    }
 
+}
 
-class AStart {
-private:
-    MinHeap<Point*> openList;
-    vector<Point*> closeList;
-    Point* m_StartPoint, *m_EndPoint;
-    int minx,maxx,miny,maxy;
+class SearchAlgorithm {
+protected:
+    Point *m_StartPoint, *m_EndPoint;
+    int minx, maxx, miny, maxy;
+
 public:
-    AStart( Point* startPoint, Point* endPoint) {
+    virtual void initSize(const int minx, const int maxx, const int miny, const int maxy) = 0;
+
+    virtual void startFind() = 0;
+
+    bool printPath() {
+        const Point *path = m_EndPoint;
+        while (NULL != path) {
+            printf("(%d,%d)->\n", path->x, path->y);
+            path = path->father;
+        }
+    }
+
+    virtual bool canWalkable(int x, int y) {
+        if (x > maxx || x < minx || y > maxy || y < miny) return false;
+        return true;
+//        return (x) % 2 == 0 || (x) % 3 == 0 || (y) % 7 == 0;
+    }
+};
+
+class AStart : public SearchAlgorithm {
+private:
+    MinHeap<Point *> openList;
+    vector<Point *> closeList;
+    vector<vector<Point *> > map;
+public:
+    AStart(Point *startPoint, Point *endPoint) {
         m_StartPoint = startPoint;
         m_EndPoint = endPoint;
     }
 
-    AStart(int startx,int starty,int endx,int endy) {
-        m_StartPoint = new Point(startx,starty,0,0,NULL);
-        m_EndPoint = new Point(endx,endy,0,0,NULL);
+    AStart(int startx, int starty, int endx, int endy) {
+        m_StartPoint = new Point(startx, starty, 0, 0, NULL);
+        m_EndPoint = new Point(endx, endy, 0, 0, NULL);
     }
 
-    void initSize(int minx,int maxx,int miny,int maxy)
-    {
+    void initSize(const int minx, const int maxx, const int miny, const int maxy) {
         this->minx = minx;
         this->maxx = maxx;
         this->miny = miny;
         this->maxy = maxy;
+        map = vector<vector<Point *>>(maxx + 1, vector<Point *>(maxy + 1, 0));
     }
 
     void startFind() {
         openList.insert(m_StartPoint);
         while (!openList.isEmpty()) {
-            Point* cur = openList.extract();
+            Point *cur = openList.extract();
             closeList.push_back(cur);
-            if (*cur == *m_EndPoint){
+            if (*cur == *m_EndPoint) {
                 m_EndPoint = cur;
                 break;
             }
@@ -222,23 +267,15 @@ public:
         printPath();
     }
 
-//    TODO
-    bool printPath() {
-        const Point* path = m_EndPoint;
-        while(NULL != path)
-        {
-            printf("(%d,%d)->",path->x,path->y);
-            path = path->father;
-        }
-    }
 
     bool canWalkable(int x, int y) {
 //        return true;
-        return (x) % 2 == 0 || (x) % 3 == 0 || (y) % 7 == 0;
+        if (x > maxx || x < minx || y > maxy || y < miny) return false;
 
+        return (x) % 2 == 0 || (x) % 3 == 0 || (y) % 7 == 0;
     }
 
-    void addNeighbor(const Point* currentPoint) {
+    void addNeighbor(const Point *currentPoint) {
         //add left
         tryAddLeft(currentPoint);
         tryAddRight(currentPoint);
@@ -248,58 +285,51 @@ public:
         // 可以加斜角走
     }
 
-    void tryAddLeft(const Point* currentPoint)
-    {
+    void tryAddLeft(const Point *currentPoint) {
         int x = currentPoint->x - 1;
         int y = currentPoint->y;
-        tryAddPoint(x,y,currentPoint,leftweight);
+        tryAddPoint(x, y, currentPoint, leftweight);
     }
-    void tryAddRight(const Point* currentPoint)
-    {
+
+    void tryAddRight(const Point *currentPoint) {
         int x = currentPoint->x + 1;
         int y = currentPoint->y;
-        tryAddPoint(x,y,currentPoint,rightweight);
+        tryAddPoint(x, y, currentPoint, rightweight);
     }
 
-    void tryAddUp(const Point* currentPoint)
-    {
+    void tryAddUp(const Point *currentPoint) {
         int x = currentPoint->x;
         int y = currentPoint->y - 1;
-        tryAddPoint(x,y,currentPoint,upweight);
+        tryAddPoint(x, y, currentPoint, upweight);
     }
 
-    void tryAddDown(const Point* currentPoint)
-    {
+    void tryAddDown(const Point *currentPoint) {
         int x = currentPoint->x;
         int y = currentPoint->y + 1;
-        tryAddPoint(x,y,currentPoint,downweight);
+        tryAddPoint(x, y, currentPoint, downweight);
     }
 
-    void tryAddPoint(int x, int y,const Point* currentPoint,float weight)
-    {
-        if(x > maxx || x < minx || y > maxy || y < miny) return;
+    void tryAddPoint(int x, int y, const Point *currentPoint, float weight) {
         if (canWalkable(x, y) && !hasAddedCloseList(x, y)) {
-            Point* value = hasAddedOpenList(x, y);
-            int newweight = currentPoint->g+weight;
-            float f = newweight+ pow(m_EndPoint->x - x,2)+pow(m_EndPoint->y - y,2);
+            Point *value = hasAddedOpenList(x, y);
+            int newweight = currentPoint->g + weight;
+            float f = newweight + pow(m_EndPoint->x - x, 2) + pow(m_EndPoint->y - y, 2);
 
-            if (NULL != value && newweight < value->g)
-            {
-                value->update(newweight,f, currentPoint);
+            if (NULL != value && newweight < value->g) {
+                value->update(newweight, f, currentPoint);
                 openList.resort();
-                int a = 1;
-            }
-            else if(NULL == value){
-                Point *point = new Point(x, y, newweight,f,currentPoint);
+            } else if (NULL == value) {
+                Point *point = new Point(x, y, newweight, f, currentPoint);
                 openList.insert(point);
-                int a = 1;
+                map[x][y] = point;
             }
         }
     }
 
-    Point* hasAddedOpenList(int x, int y) {
-        Point** temp= openList.find(x, y);
-        if(temp == NULL) return NULL;
+    Point *hasAddedOpenList(int x, int y) {
+        return map[x][y];
+        Point **temp = openList.find(x, y);
+        if (temp == NULL) return NULL;
         return *temp;
     }
 
@@ -311,25 +341,197 @@ public:
     }
 };
 
-int main(int argc, char const *argv[]) {
-    AStart start = AStart(3,2,911,111);
-    start.initSize(0,1000,0,1000);
-    start.startFind();
+class DFS : public SearchAlgorithm {
+private:
+    vector<Point *> visited;
+    vector<Point> stack;
+    vector<vector<int>> map;
+    int min = INT_MAX;
+    int neighbor[4][2] = {{1,0},{-1,0},{0,1},{0,-1}};
+public:
+    DFS(Point *startPoint, Point *endPoint) {
+        m_StartPoint = startPoint;
+        m_EndPoint = endPoint;
+    }
 
-//    /* code */
-//    std::vector<int> v;
+    void initSize(const int minx, const int maxx, const int miny, const int maxy) {
+        this->minx = minx;
+        this->maxx = maxx;
+        this->miny = miny;
+        this->maxy = maxy;
+        map = vector<vector<int>>(maxx + 1, vector<int>(maxy + 1, 0));
+    }
+
+    void startFind() {
+        startFind(m_StartPoint);
+//        startFind(m_StartPoint->x,m_StartPoint->y);
+        printPath();
+    }
+
+    bool printPath() {
+        if (stack.size() != 0) {
+            for (int i = 0; i < stack.size(); ++i) {
+                printf("{%d,%d}->\n", stack[i].x, stack[i].y);
+            }
+        }if (visited.size() != 0) {
+            for (int i = 0; i < visited.size(); ++i) {
+                printf("{%d,%d}->\n", visited[i]->x, visited[i]->y);
+            }
+        }
+    }
+
+    bool hasWalked(int x,int y)
+    {
+        return 1 == map[x][y];
+    }
+
+    bool reachEnd(int x, int y)
+    {
+        return (x == m_EndPoint->x && y == m_EndPoint->y);
+    }
+
+    //查找有效路径
+    bool startFind(int x,int y) {
+        Point* point = new Point(x,y,0,0,NULL);
+        visited.push_back (point);
+        map[x][y] = 1;
+        for (int i = 0; i < 4; ++i) {
+            int *curneigh = neighbor[i];
+            int nextx = x + curneigh[0];
+            int nexty = y + curneigh[1];
+            auto walkable = canWalkable(nextx, nexty);
+            if(walkable && !hasWalked(nextx, nexty))
+            {
+                bool reached =reachEnd(nextx, nexty);
+                if (reached) {
+                    visited.push_back (m_EndPoint);
+                    return true;
+                }
+                else
+                {
+                    bool reached = startFind(nextx, nexty);
+                    if(reached) return true;
+                }
+            }
+        }
+
+        visited.pop_back();
+        delete point;
+        return false;
+    }
+
+    //查找最短路径
+    bool startFind(Point *curPoint) {
+        visited.push_back (curPoint);
+        map[curPoint->x][curPoint->y] = 1;
+        for (int i = 0; i < 4; ++i) {
+            int *curneigh = neighbor[i];
+            int nextx = curPoint->x + curneigh[0];
+            int nexty = curPoint->y + curneigh[1];
+            auto walkable = canWalkable(nextx, nexty);
+            if(walkable && !hasWalked(nextx, nexty))
+            {
+                bool reached =reachEnd(nextx, nexty);
+                if (reached && curPoint->f+1 < min) {
+                    stack.clear();
+                    for (int j = 0; j < visited.size(); ++j) {
+                        stack.push_back(*visited[j]);
+                    }
+                    stack.push_back(*m_EndPoint);
+                    return true;
+                }
+                else if(!reached)
+                {
+                    Point* next = new Point(nextx,nexty,1,curPoint->f+1,NULL);
+                    reached = startFind(next);
+                } else
+                    break;
+            }
+        }
+
+        visited.pop_back();
+        delete curPoint;
+        //如果需要获取最短路ing需要开启
+        map[curPoint->x][curPoint->y] = 0;
+        return false;
+    }
+};
+
+class BFS : public SearchAlgorithm {
+private:
+    vector<Point *> visited;
+    vector<Point> stack;
+    vector<vector<int>> map;
+    int min = INT_MAX;
+    int neighbor[4][2] = {{1,0},{-1,0},{0,1},{0,-1}};
+public:
+    BFS(Point *startPoint, Point *endPoint) {
+        m_StartPoint = startPoint;
+        m_EndPoint = endPoint;
+    }
+
+    void initSize(const int minx, const int maxx, const int miny, const int maxy) {
+        this->minx = minx;
+        this->maxx = maxx;
+        this->miny = miny;
+        this->maxy = maxy;
+        map = vector<vector<int>>(maxx + 1, vector<int>(maxy + 1, 0));
+    }
+
+    void startFind() {
+//        startFind(m_StartPoint);
+//        startFind(m_StartPoint->x,m_StartPoint->y);
+        printPath();
+//        while()
+    }
+
+    bool printPath() {
+        if (stack.size() != 0) {
+            for (int i = 0; i < stack.size(); ++i) {
+                printf("{%d,%d}->\n", stack[i].x, stack[i].y);
+            }
+        }if (visited.size() != 0) {
+            for (int i = 0; i < visited.size(); ++i) {
+                printf("{%d,%d}->\n", visited[i]->x, visited[i]->y);
+            }
+        }
+    }
+};
+
+int main(int argc, char const *argv[]) {
+    Point *startPoint = new Point(0, 0, 0, 0, NULL);
+    Point *endPoint = new Point(2, 2, 0, 0, NULL);
+
+//    AStart start = AStart(startPoint,endPoint);
+//    start.initSize(0,1000,0,1000);
+//    start.startFind();
+
+    DFS dfs = DFS(startPoint, endPoint);
+    dfs.initSize(0, 4, 0,4);
+    dfs.startFind();
+
+
+//    MinHeap<Point*> min_heap;
 //    srand(1);
-//    int capacity = 100;
-//
-//    for (int i = 0; i < capacity; ++i) {
-//        v.push_back(random(capacity));
+//    int x = 1000;
+//    int y = 1000;
+//    int capacity = x*y;
+//    for (int i = 0; i < x; ++i) {
+//        for (int j = 0; j < y; ++j) {
+//            auto p = new Point(i,j,1,random(capacity), nullptr);
+//            min_heap.insert(p);
+//        }
 //    }
-//    MinHeap<int> min_heap;
-//    min_heap.buildHeap(v);
+//
+//    for (int i = 0; i < x; ++i) {
+//        for (int j = 0; j < y; ++j) {
+//            min_heap.find(i,j);
+//        }
+//    }
 //    while (!min_heap.isEmpty())
 //    {
-//        int value = min_heap.extract();
-//        printf("%d\n",value);
+//        auto value = min_heap.extract();
+//        printf("{%d,%d},f:%.2f\n",value->x,value->y,value->f);
 //    }
 //
 //    return 0;
