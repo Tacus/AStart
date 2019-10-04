@@ -105,17 +105,17 @@ public:
         return it != m_container.end();
     }
 
-    T *find(int x, int y) {
-//        typename std::vector<T>::iterator it;
-//        it = find_if(m_container.begin(), m_container.end(), [x,y](T const &obj) { return x == obj->x && y == obj->y; });
-//        return it != m_container.end()?it.base():NULL;
-        for (int i = 0; i < m_container.size(); ++i) {
-            auto value = m_container[i];
-            if (*value->x == x && *value->y == y) {
-                return value;
-            }
-        }
-    }
+//    T *find(int x, int y) {
+////        typename std::vector<T>::iterator it;
+////        it = find_if(m_container.begin(), m_container.end(), [x,y](T const &obj) { return x == obj->x && y == obj->y; });
+////        return it != m_container.end()?it.base():NULL;
+//        for (int i = 0; i < m_container.size(); ++i) {
+//            auto value = m_container[i];
+//            if (*value->x == x && *value->y == y) {
+//                return value;
+//            }
+//        }
+//    }
 
     void sortup(int start, int end) {
         int childNode = 2 * start + 1;
@@ -192,19 +192,19 @@ void MinHeap<Point *>::sortdown(int start, int end) {
     }
 }
 
-template<>
-Point **MinHeap<Point *>::find(int x, int y) {
-//        typename std::vector<T>::iterator it;
-//        it = find_if(m_container.begin(), m_container.end(), [x,y](T const &obj) { return x == obj->x && y == obj->y; });
-//        return it != m_container.end()?it.base():NULL;
-    for (int i = 0; i < m_container.size(); ++i) {
-        Point *value = m_container[i];
-        if (value->x == x && value->y == y) {
-            return &value;
-        }
-    }
+//template<>
+//Point **MinHeap<Point *>::find(int x, int y) {
+////        typename std::vector<T>::iterator it;
+////        it = find_if(m_container.begin(), m_container.end(), [x,y](T const &obj) { return x == obj->x && y == obj->y; });
+////        return it != m_container.end()?it.base():NULL;
+//    for (int i = 0; i < m_container.size(); ++i) {
+//        Point *value = m_container[i];
+//        if (value->x == x && value->y == y) {
+//            return &value;
+//        }
+//    }
 
-}
+//}
 
 class SearchAlgorithm {
 protected:
@@ -214,9 +214,17 @@ protected:
 public:
     virtual void initSize(const int minx, const int maxx, const int miny, const int maxy) = 0;
 
-    virtual void startFind() = 0;
+    virtual void startFind() {
+        time_t eslapse,cur = time(NULL);
+        doFind();
+        printPath();
+        eslapse = time(NULL);
+        printf("spend time:%d",eslapse - cur);
+    };
 
-    bool printPath() {
+    virtual void doFind() = 0;
+
+    void printPath() {
         const Point *path = m_EndPoint;
         while (NULL != path) {
             printf("(%d,%d)->\n", path->x, path->y);
@@ -226,8 +234,7 @@ public:
 
     virtual bool canWalkable(int x, int y) {
         if (x >= maxx || x < minx || y >= maxy || y < miny) return false;
-        return true;
-//        return (x) % 2 == 0 || (x) % 3 == 0 || (y) % 7 == 0;
+        return (x) % 2 == 0 || (x) % 3 == 0 || (y) % 7 == 0;
     }
 };
 
@@ -255,7 +262,7 @@ public:
         map = vector<vector<Point *>>(maxx, vector<Point *>(maxy, 0));
     }
 
-    void startFind() {
+    void doFind() {
         openList.insert(m_StartPoint);
         while (!openList.isEmpty()) {
             Point *cur = openList.extract();
@@ -266,9 +273,7 @@ public:
             }
             addNeighbor(cur);
         }
-        printPath();
     }
-
 
     bool canWalkable(int x, int y) {
 //        return true;
@@ -330,9 +335,9 @@ public:
 
     Point *hasAddedOpenList(int x, int y) {
         return map[x][y];
-        Point **temp = openList.find(x, y);
-        if (temp == NULL) return NULL;
-        return *temp;
+//        Point **temp = openList.find(x, y);
+//        if (temp == NULL) return NULL;
+//        return *temp;
     }
 
     bool hasAddedCloseList(int x, int y) {
@@ -340,6 +345,7 @@ public:
             if (x == closeList[i]->x && y == closeList[i]->y)
                 return true;
         }
+        return false;
     }
 };
 
@@ -369,13 +375,12 @@ public:
         fatherMap = vector<vector<map<string, int>>>(maxx, vector<map<string, int>>(maxy));
     }
 
-    void startFind() {
-        startFind(m_StartPoint);
-//        startFind(m_StartPoint->x,m_StartPoint->y);
-        printPath();
+    void doFind() {
+        findByPoint(m_StartPoint);
+//        findByCoordinate(m_StartPoint->x,m_StartPoint->y);
     }
 
-    bool printPath() {
+    void printPath() {
         if (stack.size() != 0) {
             for (int i = 0; i < stack.size(); ++i) {
                 printf("{%d,%d}->\n", stack[i].x, stack[i].y);
@@ -406,12 +411,12 @@ public:
 
     char *getKey(int x, int y) {
         char *key = new char[20];
-        sprintf(key, "%s_%s", x, y);
+        sprintf(key, "%d_%d", x, y);
         return key;
     }
 
     //查找有效路径
-    bool startFind(int x, int y) {
+    bool findByCoordinate(int x, int y) {
         Point *point = new Point(x, y, 0, 0, NULL);
         visited.push_back(point);
         interMap[x][y] = 1;
@@ -426,7 +431,7 @@ public:
                     visited.push_back(m_EndPoint);
                     return true;
                 } else {
-                    bool reached = startFind(nextx, nexty);
+                    bool reached = findByCoordinate(nextx, nexty);
                     if (reached) return true;
                 }
             }
@@ -438,7 +443,7 @@ public:
     }
 
     //查找最短路径
-    bool startFind(Point *curPoint) {
+    bool findByPoint(Point *curPoint) {
         visited.push_back(curPoint);
         interMap[curPoint->x][curPoint->y] = 1;
         for (int i = 0; i < 4; ++i) {
@@ -463,7 +468,7 @@ public:
                     auto map = fatherMap[nextx][nexty];
                     map[key] = 1;
                     fatherMap[nextx][nexty] = map;
-                    startFind(next);
+                    findByPoint(next);
                 }
             }
         }
@@ -497,7 +502,7 @@ public:
         this->maxx = maxx;
         this->miny = miny;
         this->maxy = maxy;
-        walked = vector<int>(maxx*maxy, 0);
+        walked = vector<int>(maxx * maxy, 0);
     }
 
     bool hasWalked(int x, int y) {
@@ -509,7 +514,7 @@ public:
         return (x == m_EndPoint->x && y == m_EndPoint->y);
     }
 
-    void doFind() {
+    virtual void doFind() {
         int num = m_StartPoint->x * maxx + m_StartPoint->y;
         walked[num] = 1;
         visited.push(m_StartPoint);
@@ -523,11 +528,10 @@ public:
                 auto walkable = canWalkable(nextx, nexty);
                 if (walkable && !hasWalked(nextx, nexty)) {
                     bool reached = reachEnd(nextx, nexty);
-                    if(reached)
-                    {
-                        m_EndPoint->update(1,cur->f+1,cur);
+                    if (reached) {
+                        m_EndPoint->update(1, cur->f + 1, cur);
                         return;
-                    } else{
+                    } else {
                         Point *p = new Point(nextx, nexty, 1, cur->f + 1, cur);
                         visited.push(p);
                         num = nextx * maxx + nexty;
@@ -538,25 +542,10 @@ public:
         }
     }
 
-    void startFind() {
-        doFind();
-        printPath();
-    }
 
-    bool printPath() {
-//        if (stack.size() != 0) {
-//            for (int i = 0; i < stack.size(); ++i) {
-//                printf("{%d,%d}->\n", stack[i].x, stack[i].y);
-//            }
-//        }
-//        if (visited.size() != 0) {
-//            for (int i = 0; i < visited.size(); ++i) {
-//                printf("{%d,%d}->\n", visited[i]->x, visited[i]->y);
-//            }
-//        }
-        const Point* father = m_EndPoint;
-        while (NULL != father)
-        {
+    void printPath() {
+        const Point *father = m_EndPoint;
+        while (NULL != father) {
             printf("{%d,%d}->\n", father->x, father->y);
             father = father->father;
         }
@@ -575,9 +564,9 @@ int main(int argc, char const *argv[]) {
 //    dfs.initSize(0, 999, 0,999);
 //    dfs.startFind();
 
-    BFS bfs = BFS(startPoint, endPoint);
-    bfs.initSize(0, 1000, 0, 1000);
-    bfs.startFind();
+//    BFS bfs = BFS(startPoint, endPoint);
+//    bfs.initSize(0, 1000, 0, 1000);
+//    bfs.startFind();
 
 
 //    auto fatherMap = vector<vector<map<string,int>>>(5, vector<map<string,int>>(5));
