@@ -2,6 +2,8 @@
 #include <vector>
 #include <cstdlib>
 #include <math.h>
+#include <map>
+#include <queue>
 
 using namespace std;
 #define  random(t) rand()%t
@@ -223,7 +225,7 @@ public:
     }
 
     virtual bool canWalkable(int x, int y) {
-        if (x > maxx || x < minx || y > maxy || y < miny) return false;
+        if (x >= maxx || x < minx || y >= maxy || y < miny) return false;
         return true;
 //        return (x) % 2 == 0 || (x) % 3 == 0 || (y) % 7 == 0;
     }
@@ -250,7 +252,7 @@ public:
         this->maxx = maxx;
         this->miny = miny;
         this->maxy = maxy;
-        map = vector<vector<Point *>>(maxx + 1, vector<Point *>(maxy + 1, 0));
+        map = vector<vector<Point *>>(maxx, vector<Point *>(maxy, 0));
     }
 
     void startFind() {
@@ -345,9 +347,13 @@ class DFS : public SearchAlgorithm {
 private:
     vector<Point *> visited;
     vector<Point> stack;
-    vector<vector<int>> map;
+    vector<vector<int>> interMap;
+    vector<vector<map<string, int>>> fatherMap;
     int min = INT_MAX;
-    int neighbor[4][2] = {{1,0},{-1,0},{0,1},{0,-1}};
+    int neighbor[4][2] = {{1,  0},
+                          {-1, 0},
+                          {0,  1},
+                          {0,  -1}};
 public:
     DFS(Point *startPoint, Point *endPoint) {
         m_StartPoint = startPoint;
@@ -359,7 +365,8 @@ public:
         this->maxx = maxx;
         this->miny = miny;
         this->maxy = maxy;
-        map = vector<vector<int>>(maxx + 1, vector<int>(maxy + 1, 0));
+        interMap = vector<vector<int>>(maxx, vector<int>(maxy, 0));
+        fatherMap = vector<vector<map<string, int>>>(maxx, vector<map<string, int>>(maxy));
     }
 
     void startFind() {
@@ -373,44 +380,54 @@ public:
             for (int i = 0; i < stack.size(); ++i) {
                 printf("{%d,%d}->\n", stack[i].x, stack[i].y);
             }
-        }if (visited.size() != 0) {
+        }
+        if (visited.size() != 0) {
             for (int i = 0; i < visited.size(); ++i) {
                 printf("{%d,%d}->\n", visited[i]->x, visited[i]->y);
             }
         }
     }
 
-    bool hasWalked(int x,int y)
-    {
-        return 1 == map[x][y];
+    bool hasWalked(int x, int y, int fatherx, int fathery) {
+        char key[20];
+        sprintf(key, "%d_%d", fatherx, fathery);
+        auto map = fatherMap[x][y];
+        auto iter = map.find(key);
+        if (iter != map.end()) {
+            int value = iter->second;
+            return 1 == interMap[x][y] || value == 1;
+        }
+        return 1 == interMap[x][y];
     }
 
-    bool reachEnd(int x, int y)
-    {
+    bool reachEnd(int x, int y) {
         return (x == m_EndPoint->x && y == m_EndPoint->y);
     }
 
+    char *getKey(int x, int y) {
+        char *key = new char[20];
+        sprintf(key, "%s_%s", x, y);
+        return key;
+    }
+
     //查找有效路径
-    bool startFind(int x,int y) {
-        Point* point = new Point(x,y,0,0,NULL);
-        visited.push_back (point);
-        map[x][y] = 1;
+    bool startFind(int x, int y) {
+        Point *point = new Point(x, y, 0, 0, NULL);
+        visited.push_back(point);
+        interMap[x][y] = 1;
         for (int i = 0; i < 4; ++i) {
             int *curneigh = neighbor[i];
             int nextx = x + curneigh[0];
             int nexty = y + curneigh[1];
             auto walkable = canWalkable(nextx, nexty);
-            if(walkable && !hasWalked(nextx, nexty))
-            {
-                bool reached =reachEnd(nextx, nexty);
+            if (walkable && !hasWalked(nextx, nexty, x, y)) {
+                bool reached = reachEnd(nextx, nexty);
                 if (reached) {
-                    visited.push_back (m_EndPoint);
+                    visited.push_back(m_EndPoint);
                     return true;
-                }
-                else
-                {
+                } else {
                     bool reached = startFind(nextx, nexty);
-                    if(reached) return true;
+                    if (reached) return true;
                 }
             }
         }
@@ -422,27 +439,30 @@ public:
 
     //查找最短路径
     bool startFind(Point *curPoint) {
-        visited.push_back (curPoint);
-        map[curPoint->x][curPoint->y] = 1;
+        visited.push_back(curPoint);
+        interMap[curPoint->x][curPoint->y] = 1;
         for (int i = 0; i < 4; ++i) {
             int *curneigh = neighbor[i];
             int nextx = curPoint->x + curneigh[0];
             int nexty = curPoint->y + curneigh[1];
             auto walkable = canWalkable(nextx, nexty);
-            if(walkable && !hasWalked(nextx, nexty))
-            {
-                bool reached =reachEnd(nextx, nexty);
-                if (reached && curPoint->f+1 < min) {
+            if (walkable && !hasWalked(nextx, nexty, curPoint->x, curPoint->y)) {
+                bool reached = reachEnd(nextx, nexty);
+
+                if (reached && curPoint->f + 1 < min) {
                     min = curPoint->f + 1;
                     stack.clear();
                     for (int j = 0; j < visited.size(); ++j) {
                         stack.push_back(*visited[j]);
                     }
                     stack.push_back(*m_EndPoint);
-                }
-                else
-                {
-                    Point* next = new Point(nextx,nexty,1,curPoint->f+1,NULL);
+                } else {
+                    Point *next = new Point(nextx, nexty, 1, curPoint->f + 1, NULL);
+                    char key[20];
+                    sprintf(key, "%d_%d", curPoint->x, curPoint->y);
+                    auto map = fatherMap[nextx][nexty];
+                    map[key] = 1;
+                    fatherMap[nextx][nexty] = map;
                     startFind(next);
                 }
             }
@@ -451,18 +471,21 @@ public:
         visited.pop_back();
         delete curPoint;
         //如果需要获取最短路ing需要开启
-        map[curPoint->x][curPoint->y] = 0;
+        interMap[curPoint->x][curPoint->y] = 0;
         return false;
     }
 };
 
 class BFS : public SearchAlgorithm {
 private:
-    vector<Point *> visited;
+    queue<Point *> visited;
     vector<Point> stack;
-    vector<vector<int>> map;
+    vector<int> walked;
     int min = INT_MAX;
-    int neighbor[4][2] = {{1,0},{-1,0},{0,1},{0,-1}};
+    int neighbor[4][2] = {{1,  0},
+                          {-1, 0},
+                          {0,  1},
+                          {0,  -1}};
 public:
     BFS(Point *startPoint, Point *endPoint) {
         m_StartPoint = startPoint;
@@ -474,40 +497,111 @@ public:
         this->maxx = maxx;
         this->miny = miny;
         this->maxy = maxy;
-        map = vector<vector<int>>(maxx + 1, vector<int>(maxy + 1, 0));
+        walked = vector<int>(maxx*maxy, 0);
+    }
+
+    bool hasWalked(int x, int y) {
+        int num = x * maxx + y;
+        return walked[num] == 1;
+    }
+
+    bool reachEnd(int x, int y) {
+        return (x == m_EndPoint->x && y == m_EndPoint->y);
+    }
+
+    void doFind() {
+        int num = m_StartPoint->x * maxx + m_StartPoint->y;
+        walked[num] = 1;
+        visited.push(m_StartPoint);
+        while (0 != visited.size()) {
+            auto cur = visited.front();
+            visited.pop();
+            for (int i = 0; i < 4; ++i) {
+                int *curneigh = neighbor[i];
+                int nextx = cur->x + curneigh[0];
+                int nexty = cur->y + curneigh[1];
+                auto walkable = canWalkable(nextx, nexty);
+                if (walkable && !hasWalked(nextx, nexty)) {
+                    bool reached = reachEnd(nextx, nexty);
+                    if(reached)
+                    {
+                        m_EndPoint->update(1,cur->f+1,cur);
+                        return;
+                    } else{
+                        Point *p = new Point(nextx, nexty, 1, cur->f + 1, cur);
+                        visited.push(p);
+                        num = nextx * maxx + nexty;
+                        walked[num] = 1;
+                    }
+                }
+            }
+        }
     }
 
     void startFind() {
-//        startFind(m_StartPoint);
-//        startFind(m_StartPoint->x,m_StartPoint->y);
+        doFind();
         printPath();
-//        while()
     }
 
     bool printPath() {
-        if (stack.size() != 0) {
-            for (int i = 0; i < stack.size(); ++i) {
-                printf("{%d,%d}->\n", stack[i].x, stack[i].y);
-            }
-        }if (visited.size() != 0) {
-            for (int i = 0; i < visited.size(); ++i) {
-                printf("{%d,%d}->\n", visited[i]->x, visited[i]->y);
-            }
+//        if (stack.size() != 0) {
+//            for (int i = 0; i < stack.size(); ++i) {
+//                printf("{%d,%d}->\n", stack[i].x, stack[i].y);
+//            }
+//        }
+//        if (visited.size() != 0) {
+//            for (int i = 0; i < visited.size(); ++i) {
+//                printf("{%d,%d}->\n", visited[i]->x, visited[i]->y);
+//            }
+//        }
+        const Point* father = m_EndPoint;
+        while (NULL != father)
+        {
+            printf("{%d,%d}->\n", father->x, father->y);
+            father = father->father;
         }
     }
 };
 
 int main(int argc, char const *argv[]) {
     Point *startPoint = new Point(0, 0, 0, 0, NULL);
-    Point *endPoint = new Point(2, 2, 0, 0, NULL);
+    Point *endPoint = new Point(992, 992, 0, 0, NULL);
 
 //    AStart start = AStart(startPoint,endPoint);
 //    start.initSize(0,1000,0,1000);
 //    start.startFind();
 
-    DFS dfs = DFS(startPoint, endPoint);
-    dfs.initSize(0, 4, 0,4);
-    dfs.startFind();
+//    DFS dfs = DFS(startPoint, endPoint);
+//    dfs.initSize(0, 999, 0,999);
+//    dfs.startFind();
+
+    BFS bfs = BFS(startPoint, endPoint);
+    bfs.initSize(0, 1000, 0, 1000);
+    bfs.startFind();
+
+
+//    auto fatherMap = vector<vector<map<string,int>>>(5, vector<map<string,int>>(5));
+//
+//    for (int i = 0; i < 5; ++i) {
+//        for (int j = 0; j < 5; ++j) {
+//            auto value = fatherMap[i][j];
+//            char key[20];
+//            sprintf(key,"%d_%d",i,j);
+//            value[key] = 1;
+//            fatherMap[i][j] = value;
+//        }
+//    }
+//
+//    for (int i = 0; i < 5; ++i) {
+//        for (int j = 0; j < 5; ++j) {
+//            auto value = fatherMap[i][j];
+//            map<string,int>::iterator strmap_iter2 = value.begin();
+//            for(;strmap_iter2 !=value.end();strmap_iter2++)
+//            {
+//                cout<<strmap_iter2->first<<' '<<strmap_iter2->second<<endl;
+//            }
+//        }
+//    }
 
 
 //    MinHeap<Point*> min_heap;
