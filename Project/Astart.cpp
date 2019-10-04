@@ -585,9 +585,9 @@ extern "C"
     }
 }
 //
-//int main(int argc, char const *argv[]) {
-//    printf("ASTARTtime:%d",BFSAlg(0,0,0,0,12,999));
-//    return 0;
+int main(int argc, char const *argv[]) {
+    printf("ASTARTtime:%d",DFSAlg(0,0,28,89,100,100));
+    return 0;
 //    AStart start = AStart(startPoint,endPoint);
 //    start.initSize(0,1000,0,1000);
 //    start.startFind();
@@ -646,7 +646,7 @@ extern "C"
 //        auto value = min_heap.extract();
 //        printf("{%d,%d},f:%.2f\n",value->x,value->y,value->f);
 //    }
-//
-//    return 0;
-//}
+
+    return 0;
+}
 //}
