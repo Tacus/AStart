@@ -4,7 +4,7 @@
 #include <math.h>
 #include <map>
 #include <queue>
-
+#include <chrono>
 using namespace std;
 #define  random(t) rand()%t
 #define leftweight 1
@@ -206,6 +206,8 @@ void MinHeap<Point *>::sortdown(int start, int end) {
 
 //}
 
+static long getCurTimeInMille();
+
 class SearchAlgorithm {
 protected:
     Point *m_StartPoint, *m_EndPoint;
@@ -214,12 +216,13 @@ protected:
 public:
     virtual void initSize(const int minx, const int maxx, const int miny, const int maxy) = 0;
 
-    virtual void startFind() {
-        time_t eslapse,cur = time(NULL);
+    virtual long startFind() {
+        long eslapse,cur = getCurTimeInMille();
         doFind();
-        printPath();
-        eslapse = time(NULL);
-        printf("spend time:%d",eslapse - cur);
+//        printPath();
+        eslapse = getCurTimeInMille() - cur;
+//        printf("spend time:%d",eslapse);
+        return eslapse;
     };
 
     virtual void doFind() = 0;
@@ -273,13 +276,6 @@ public:
             }
             addNeighbor(cur);
         }
-    }
-
-    bool canWalkable(int x, int y) {
-//        return true;
-        if (x > maxx || x < minx || y > maxy || y < miny) return false;
-
-        return (x) % 2 == 0 || (x) % 3 == 0 || (y) % 7 == 0;
     }
 
     void addNeighbor(const Point *currentPoint) {
@@ -552,22 +548,57 @@ public:
     }
 };
 
-int main(int argc, char const *argv[]) {
-    Point *startPoint = new Point(0, 0, 0, 0, NULL);
-    Point *endPoint = new Point(992, 992, 0, 0, NULL);
+long static getCurTimeInMille()
+{
+    chrono::milliseconds ms = chrono::duration_cast< chrono::milliseconds >(
+            chrono::system_clock::now().time_since_epoch()
+    );
+    return ms.count();
+}
 
+extern "C"
+{
+     extern int AStartAlg(int startx, int starty, int endx, int endy, int width, int height) {
+        Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+        Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+
+        AStart start = AStart(startPoint, endPoint);
+        start.initSize(0, width, 0, height);
+        return start.startFind();
+    }
+
+     extern int DFSAlg(int startx, int starty, int endx, int endy, int with, int height) {
+        Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+        Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+        DFS dfs = DFS(startPoint, endPoint);
+        dfs.initSize(0, with, 0, height);
+        return dfs.startFind();
+    }
+
+     extern int BFSAlg(int startx, int starty, int endx, int endy, int with, int height) {
+        Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+        Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+
+        BFS bfs = BFS(startPoint, endPoint);
+        bfs.initSize(0, with, 0, height);
+        return bfs.startFind();
+    }
+}
+//
+//int main(int argc, char const *argv[]) {
+//    printf("ASTARTtime:%d",BFSAlg(0,0,0,0,12,999));
+//    return 0;
 //    AStart start = AStart(startPoint,endPoint);
 //    start.initSize(0,1000,0,1000);
 //    start.startFind();
-
-//    DFS dfs = DFS(startPoint, endPoint);
-//    dfs.initSize(0, 999, 0,999);
-//    dfs.startFind();
-
+//
+////    DFS dfs = DFS(startPoint, endPoint);
+////    dfs.initSize(0, 999, 0,999);
+////    dfs.startFind();
+//
 //    BFS bfs = BFS(startPoint, endPoint);
 //    bfs.initSize(0, 1000, 0, 1000);
 //    bfs.startFind();
-
 
 //    auto fatherMap = vector<vector<map<string,int>>>(5, vector<map<string,int>>(5));
 //
@@ -617,5 +648,5 @@ int main(int argc, char const *argv[]) {
 //    }
 //
 //    return 0;
-}
-
+//}
+//}

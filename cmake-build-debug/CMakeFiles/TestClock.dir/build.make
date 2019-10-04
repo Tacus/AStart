@@ -57,27 +57,27 @@ include CMakeFiles/TestClock.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/TestClock.dir/flags.make
 
-CMakeFiles/TestClock.dir/main.cpp.o: CMakeFiles/TestClock.dir/flags.make
-CMakeFiles/TestClock.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/zhangguobing/develop/workspace/workspace_c++/AStart/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/TestClock.dir/main.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/TestClock.dir/main.cpp.o -c /Users/zhangguobing/develop/workspace/workspace_c++/AStart/main.cpp
+CMakeFiles/TestClock.dir/Astart.cpp.o: CMakeFiles/TestClock.dir/flags.make
+CMakeFiles/TestClock.dir/Astart.cpp.o: ../Astart.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/zhangguobing/develop/workspace/workspace_c++/AStart/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/TestClock.dir/Astart.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/TestClock.dir/Astart.cpp.o -c /Users/zhangguobing/develop/workspace/workspace_c++/AStart/Astart.cpp
 
-CMakeFiles/TestClock.dir/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/TestClock.dir/main.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/zhangguobing/develop/workspace/workspace_c++/AStart/main.cpp > CMakeFiles/TestClock.dir/main.cpp.i
+CMakeFiles/TestClock.dir/Astart.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/TestClock.dir/Astart.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/zhangguobing/develop/workspace/workspace_c++/AStart/Astart.cpp > CMakeFiles/TestClock.dir/Astart.cpp.i
 
-CMakeFiles/TestClock.dir/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/TestClock.dir/main.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/zhangguobing/develop/workspace/workspace_c++/AStart/main.cpp -o CMakeFiles/TestClock.dir/main.cpp.s
+CMakeFiles/TestClock.dir/Astart.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/TestClock.dir/Astart.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/zhangguobing/develop/workspace/workspace_c++/AStart/Astart.cpp -o CMakeFiles/TestClock.dir/Astart.cpp.s
 
 # Object files for target TestClock
 TestClock_OBJECTS = \
-"CMakeFiles/TestClock.dir/main.cpp.o"
+"CMakeFiles/TestClock.dir/Astart.cpp.o"
 
 # External object files for target TestClock
 TestClock_EXTERNAL_OBJECTS =
 
-TestClock: CMakeFiles/TestClock.dir/main.cpp.o
+TestClock: CMakeFiles/TestClock.dir/Astart.cpp.o
 TestClock: CMakeFiles/TestClock.dir/build.make
 TestClock: CMakeFiles/TestClock.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/zhangguobing/develop/workspace/workspace_c++/AStart/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable TestClock"

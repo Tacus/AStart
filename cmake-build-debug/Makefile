@@ -123,32 +123,32 @@ TestClock/fast:
 	$(MAKE) -f CMakeFiles/TestClock.dir/build.make CMakeFiles/TestClock.dir/build
 .PHONY : TestClock/fast
 
-main.o: main.cpp.o
+Astart.o: Astart.cpp.o
 
-.PHONY : main.o
+.PHONY : Astart.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) -f CMakeFiles/TestClock.dir/build.make CMakeFiles/TestClock.dir/main.cpp.o
-.PHONY : main.cpp.o
+Astart.cpp.o:
+	$(MAKE) -f CMakeFiles/TestClock.dir/build.make CMakeFiles/TestClock.dir/Astart.cpp.o
+.PHONY : Astart.cpp.o
 
-main.i: main.cpp.i
+Astart.i: Astart.cpp.i
 
-.PHONY : main.i
+.PHONY : Astart.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles/TestClock.dir/build.make CMakeFiles/TestClock.dir/main.cpp.i
-.PHONY : main.cpp.i
+Astart.cpp.i:
+	$(MAKE) -f CMakeFiles/TestClock.dir/build.make CMakeFiles/TestClock.dir/Astart.cpp.i
+.PHONY : Astart.cpp.i
 
-main.s: main.cpp.s
+Astart.s: Astart.cpp.s
 
-.PHONY : main.s
+.PHONY : Astart.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles/TestClock.dir/build.make CMakeFiles/TestClock.dir/main.cpp.s
-.PHONY : main.cpp.s
+Astart.cpp.s:
+	$(MAKE) -f CMakeFiles/TestClock.dir/build.make CMakeFiles/TestClock.dir/Astart.cpp.s
+.PHONY : Astart.cpp.s
 
 # Help Target
 help:
@@ -159,9 +159,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... TestClock"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... Astart.o"
+	@echo "... Astart.i"
+	@echo "... Astart.s"
 .PHONY : help
 
 

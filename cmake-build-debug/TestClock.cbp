@@ -80,7 +80,10 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/zhangguobing/develop/workspace/workspace_c++/AStart/main.cpp">
+		<Unit filename="/Users/zhangguobing/develop/workspace/workspace_c++/AStart/Astart.cpp">
+			<Option target="TestClock"/>
+		</Unit>
+		<Unit filename="/Users/zhangguobing/develop/workspace/workspace_c++/AStart/Astart.h">
 			<Option target="TestClock"/>
 		</Unit>
 		<Unit filename="/Users/zhangguobing/develop/workspace/workspace_c++/AStart/CMakeLists.txt">
