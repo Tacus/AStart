@@ -433,19 +433,18 @@ public:
             {
                 bool reached =reachEnd(nextx, nexty);
                 if (reached && curPoint->f+1 < min) {
+                    min = curPoint->f + 1;
                     stack.clear();
                     for (int j = 0; j < visited.size(); ++j) {
                         stack.push_back(*visited[j]);
                     }
                     stack.push_back(*m_EndPoint);
-                    return true;
                 }
-                else if(!reached)
+                else
                 {
                     Point* next = new Point(nextx,nexty,1,curPoint->f+1,NULL);
-                    reached = startFind(next);
-                } else
-                    break;
+                    startFind(next);
+                }
             }
         }
 
