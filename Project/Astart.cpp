@@ -219,7 +219,7 @@ public:
     virtual long startFind() {
         long eslapse,cur = getCurTimeInMille();
         doFind();
-//        printPath();
+        printPath();
         eslapse = getCurTimeInMille() - cur;
 //        printf("spend time:%d",eslapse);
         return eslapse;
@@ -372,8 +372,8 @@ public:
     }
 
     void doFind() {
-        findByPoint(m_StartPoint);
-//        findByCoordinate(m_StartPoint->x,m_StartPoint->y);
+//        findByPoint(m_StartPoint);
+        findByCoordinate(m_StartPoint->x,m_StartPoint->y);
     }
 
     void printPath() {
@@ -585,9 +585,10 @@ extern "C"
     }
 }
 //
-int main(int argc, char const *argv[]) {
-    printf("ASTARTtime:%d",DFSAlg(0,0,28,89,100,100));
-    return 0;
+//int main(int argc, char const *argv[]) {
+//    printf("AStartAlg:%d\n",AStartAlg(0,0,978,998,1000,1000));
+//    printf("DFSAlg:%d\n",DFSAlg(0,0,466,189,500,300));
+//    printf("BFSAlg:%d",BFSAlg(0,0,978,998,1000,1000));
 //    AStart start = AStart(startPoint,endPoint);
 //    start.initSize(0,1000,0,1000);
 //    start.startFind();
@@ -647,6 +648,6 @@ int main(int argc, char const *argv[]) {
 //        printf("{%d,%d},f:%.2f\n",value->x,value->y,value->f);
 //    }
 
-    return 0;
-}
+//    return 0;
 //}
+////}

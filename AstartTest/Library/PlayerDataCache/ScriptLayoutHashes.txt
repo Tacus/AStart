@@ -1,6 +1,6 @@
 iOS
 PlayerPath?
-/Users/zhangguobing/develop/workspace/workspace_unity/Astart/astartXcode
+/Users/zhangguobing/develop/Astart
 SceneListBegin?
 Assets/test.unity
 SceneListEnd?
