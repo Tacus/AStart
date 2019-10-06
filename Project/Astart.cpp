@@ -5,6 +5,7 @@
 #include <map>
 #include <queue>
 #include <chrono>
+
 using namespace std;
 #define  random(t) rand()%t
 #define leftweight 1
@@ -16,7 +17,7 @@ using namespace std;
 struct Point {
     Point() {}
 
-    Point(int x, int y, float g, float f, const Point *father) {
+    Point(unsigned int x, unsigned int y, float g, float f, Point *father) {
         this->x = x;
         this->y = y;
         this->g = g;
@@ -24,15 +25,15 @@ struct Point {
         this->father = father;
     }
 
-    void update(float g, float f, const Point *father) {
+    void update(float g, float f, Point *father) {
         this->g = g;
         this->f = f;
         this->father = father;
     }
 
-    int x, y;
+    unsigned x, y;
     float f, g;
-    const Point *father;
+    Point *father;
 
     bool operator==(const Point b) const {
         return this->x == b.x && this->y == b.y;
@@ -206,23 +207,67 @@ void MinHeap<Point *>::sortdown(int start, int end) {
 
 //}
 
-static long getCurTimeInMille();
+static int getCurTimeInMille();
+
+static int getPathArray();
 
 class SearchAlgorithm {
 protected:
     Point *m_StartPoint, *m_EndPoint;
     int minx, maxx, miny, maxy;
+    int timeInMille;
+    int pathStep;
 
 public:
     virtual void initSize(const int minx, const int maxx, const int miny, const int maxy) = 0;
 
-    virtual long startFind() {
-        long eslapse,cur = getCurTimeInMille();
+    virtual int startFind() {
+        int eslapse, cur = getCurTimeInMille();
         doFind();
-        printPath();
         eslapse = getCurTimeInMille() - cur;
-//        printf("spend time:%d",eslapse);
-        return eslapse;
+//        printPath();
+        timeInMille = eslapse;
+        return timeInMille;
+    }
+
+    int getElapse() {
+        return timeInMille;
+    }
+    
+    int getPathStep()
+    {
+        return pathStep;
+    }
+
+    virtual void addPoint2Array(Point *p, unsigned char *array, int offset) {
+        unsigned char *temp = (unsigned char *) &p->x;
+        for (int i = 0; i < 4; ++i) {
+            array[offset + i] = temp[i];
+        }
+        temp = (unsigned char *) &p->y;
+        for (int i = 0; i < 4; ++i) {
+            array[offset + i + 4] = temp[i];
+        }
+    }
+
+    virtual unsigned char* getPath() {
+        vector<Point *> vect;
+        int index = 0;
+        Point *path = m_EndPoint;
+        while (NULL != path) {
+            vect.push_back(path);
+            ++index;
+            path = path->father;
+        }
+        int offset = 0;
+        pathStep = index;
+        unsigned char* pathArray = new unsigned char[pathStep*8];
+        for (int i = 0; i < vect.size(); ++i) {
+            auto p = vect[vect.size() - i-1];
+            addPoint2Array(p, pathArray, offset);
+            offset = (i+1) * 8;
+        }
+        return pathArray;
     };
 
     virtual void doFind() = 0;
@@ -245,8 +290,19 @@ class AStart : public SearchAlgorithm {
 private:
     MinHeap<Point *> openList;
     vector<Point *> closeList;
-    vector<vector<Point *> > map;
+    vector<vector<Point *> > hasWalkedMap;
 public:
+    ~AStart() {
+        while (!openList.isEmpty()) {
+            Point *cur = openList.extract();
+            delete cur;
+        }
+        for (int i = 0; i < closeList.size(); ++i) {
+            delete closeList[i];
+        }
+//        printf("~Astart\n");
+    }
+
     AStart(Point *startPoint, Point *endPoint) {
         m_StartPoint = startPoint;
         m_EndPoint = endPoint;
@@ -262,7 +318,7 @@ public:
         this->maxx = maxx;
         this->miny = miny;
         this->maxy = maxy;
-        map = vector<vector<Point *>>(maxx, vector<Point *>(maxy, 0));
+        hasWalkedMap = vector<vector<Point *>>(maxx, vector<Point *>(maxy, 0));
     }
 
     void doFind() {
@@ -271,6 +327,7 @@ public:
             Point *cur = openList.extract();
             closeList.push_back(cur);
             if (*cur == *m_EndPoint) {
+                delete m_EndPoint;
                 m_EndPoint = cur;
                 break;
             }
@@ -278,7 +335,7 @@ public:
         }
     }
 
-    void addNeighbor(const Point *currentPoint) {
+    void addNeighbor(Point *currentPoint) {
         //add left
         tryAddLeft(currentPoint);
         tryAddRight(currentPoint);
@@ -288,31 +345,31 @@ public:
         // 可以加斜角走
     }
 
-    void tryAddLeft(const Point *currentPoint) {
+    void tryAddLeft(Point *currentPoint) {
         int x = currentPoint->x - 1;
         int y = currentPoint->y;
         tryAddPoint(x, y, currentPoint, leftweight);
     }
 
-    void tryAddRight(const Point *currentPoint) {
+    void tryAddRight(Point *currentPoint) {
         int x = currentPoint->x + 1;
         int y = currentPoint->y;
         tryAddPoint(x, y, currentPoint, rightweight);
     }
 
-    void tryAddUp(const Point *currentPoint) {
+    void tryAddUp(Point *currentPoint) {
         int x = currentPoint->x;
         int y = currentPoint->y - 1;
         tryAddPoint(x, y, currentPoint, upweight);
     }
 
-    void tryAddDown(const Point *currentPoint) {
+    void tryAddDown(Point *currentPoint) {
         int x = currentPoint->x;
         int y = currentPoint->y + 1;
         tryAddPoint(x, y, currentPoint, downweight);
     }
 
-    void tryAddPoint(int x, int y, const Point *currentPoint, float weight) {
+    void tryAddPoint(int x, int y, Point *currentPoint, float weight) {
         if (canWalkable(x, y) && !hasAddedCloseList(x, y)) {
             Point *value = hasAddedOpenList(x, y);
             int newweight = currentPoint->g + weight;
@@ -324,13 +381,13 @@ public:
             } else if (NULL == value) {
                 Point *point = new Point(x, y, newweight, f, currentPoint);
                 openList.insert(point);
-                map[x][y] = point;
+                hasWalkedMap[x][y] = point;
             }
         }
     }
 
     Point *hasAddedOpenList(int x, int y) {
-        return map[x][y];
+        return hasWalkedMap[x][y];
 //        Point **temp = openList.find(x, y);
 //        if (temp == NULL) return NULL;
 //        return *temp;
@@ -351,6 +408,7 @@ private:
     vector<Point> stack;
     vector<vector<int>> interMap;
     vector<vector<map<string, int>>> fatherMap;
+    vector<long> mFatherMap;
     int min = INT_MAX;
     int neighbor[4][2] = {{1,  0},
                           {-1, 0},
@@ -360,6 +418,19 @@ public:
     DFS(Point *startPoint, Point *endPoint) {
         m_StartPoint = startPoint;
         m_EndPoint = endPoint;
+    }
+
+    ~DFS() {
+        for (int i = 0; i < visited.size(); ++i) {
+            auto p = visited[i];
+            delete p;
+        }
+//        printf("~DFS\n");
+    }
+
+    DFS(int startx, int starty, int endx, int endy) {
+        m_StartPoint = new Point(startx, starty, 0, 0, NULL);
+        m_EndPoint = new Point(endx, endy, 0, 0, NULL);
     }
 
     void initSize(const int minx, const int maxx, const int miny, const int maxy) {
@@ -372,8 +443,15 @@ public:
     }
 
     void doFind() {
-//        findByPoint(m_StartPoint);
-        findByCoordinate(m_StartPoint->x,m_StartPoint->y);
+        findByCoordinate(m_StartPoint->x, m_StartPoint->y);
+    }
+
+    long doFindMin() {
+        long eslapse, cur = getCurTimeInMille();
+        findByPoint(m_StartPoint);
+        eslapse = getCurTimeInMille() - cur;
+        timeInMille = eslapse;
+        return timeInMille;
     }
 
     void printPath() {
@@ -456,7 +534,8 @@ public:
                     for (int j = 0; j < visited.size(); ++j) {
                         stack.push_back(*visited[j]);
                     }
-                    stack.push_back(*m_EndPoint);
+                    auto endp = Point(nextx, nexty, 1, min, NULL);
+                    stack.push_back(endp);
                 } else {
                     Point *next = new Point(nextx, nexty, 1, curPoint->f + 1, NULL);
                     char key[20];
@@ -483,6 +562,7 @@ private:
     vector<Point> stack;
     vector<int> walked;
     int min = INT_MAX;
+    vector<Point *> cache;
     int neighbor[4][2] = {{1,  0},
                           {-1, 0},
                           {0,  1},
@@ -491,6 +571,13 @@ public:
     BFS(Point *startPoint, Point *endPoint) {
         m_StartPoint = startPoint;
         m_EndPoint = endPoint;
+    }
+
+    ~BFS() {
+        for (int i = 0; i < cache.size(); ++i) {
+            auto p = cache[i];
+            delete p;
+        }
     }
 
     void initSize(const int minx, const int maxx, const int miny, const int maxy) {
@@ -514,6 +601,8 @@ public:
         int num = m_StartPoint->x * maxx + m_StartPoint->y;
         walked[num] = 1;
         visited.push(m_StartPoint);
+        cache.push_back(m_StartPoint);
+        cache.push_back(m_EndPoint);
         while (0 != visited.size()) {
             auto cur = visited.front();
             visited.pop();
@@ -530,6 +619,7 @@ public:
                     } else {
                         Point *p = new Point(nextx, nexty, 1, cur->f + 1, cur);
                         visited.push(p);
+                        cache.push_back(p);
                         num = nextx * maxx + nexty;
                         walked[num] = 1;
                     }
@@ -537,20 +627,10 @@ public:
             }
         }
     }
-
-
-    void printPath() {
-        const Point *father = m_EndPoint;
-        while (NULL != father) {
-            printf("{%d,%d}->\n", father->x, father->y);
-            father = father->father;
-        }
-    }
 };
 
-long static getCurTimeInMille()
-{
-    chrono::milliseconds ms = chrono::duration_cast< chrono::milliseconds >(
+int static getCurTimeInMille() {
+    chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds>(
             chrono::system_clock::now().time_since_epoch()
     );
     return ms.count();
@@ -558,37 +638,169 @@ long static getCurTimeInMille()
 
 extern "C"
 {
-     extern int AStartAlg(int startx, int starty, int endx, int endy, int width, int height) {
-        Point *startPoint = new Point(startx, starty, 0, 0, NULL);
-        Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+extern int AStartAlgWithTime(int startx, int starty, int endx, int endy, int width, int height) {
+    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+    AStart start = AStart(startPoint, endPoint);
+    start.initSize(0, width, 0, height);
+    return start.startFind();
+}
 
-        AStart start = AStart(startPoint, endPoint);
-        start.initSize(0, width, 0, height);
-        return start.startFind();
-    }
+extern int DFSAlgWithTime(int startx, int starty, int endx, int endy, int with, int height) {
+    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+    DFS dfs = DFS(startPoint, endPoint);
+    dfs.initSize(0, with, 0, height);
+    return dfs.startFind();
+}
+extern int DFSAlgFindMinWithTime(int startx, int starty, int endx, int endy, int with, int height) {
+    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+    DFS dfs = DFS(startPoint, endPoint);
+    dfs.initSize(0, with, 0, height);
+    return dfs.doFindMin();
+}
 
-     extern int DFSAlg(int startx, int starty, int endx, int endy, int with, int height) {
-        Point *startPoint = new Point(startx, starty, 0, 0, NULL);
-        Point *endPoint = new Point(endx, endy, 0, 0, NULL);
-        DFS dfs = DFS(startPoint, endPoint);
-        dfs.initSize(0, with, 0, height);
-        return dfs.startFind();
-    }
+extern int BFSAlgWithTime(int startx, int starty, int endx, int endy, int with, int height) {
+    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
 
-     extern int BFSAlg(int startx, int starty, int endx, int endy, int with, int height) {
-        Point *startPoint = new Point(startx, starty, 0, 0, NULL);
-        Point *endPoint = new Point(endx, endy, 0, 0, NULL);
-
-        BFS bfs = BFS(startPoint, endPoint);
-        bfs.initSize(0, with, 0, height);
-        return bfs.startFind();
-    }
+    BFS bfs = BFS(startPoint, endPoint);
+    bfs.initSize(0, with, 0, height);
+    return bfs.startFind();
 }
 //
-//int main(int argc, char const *argv[]) {
-//    printf("AStartAlg:%d\n",AStartAlg(0,0,978,998,1000,1000));
-//    printf("DFSAlg:%d\n",DFSAlg(0,0,466,189,500,300));
-//    printf("BFSAlg:%d",BFSAlg(0,0,978,998,1000,1000));
+extern unsigned char* AStartAlgWithPath(int startx, int starty, int endx, int endy, int width, int height, int *time, int*pathStep) {
+    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+
+    AStart start = AStart(startPoint, endPoint);
+    start.initSize(0, width, 0, height);
+    start.startFind();
+    unsigned char* path = start.getPath();
+    *time = start.getElapse();
+    *pathStep = start.getPathStep();
+    return path;
+}
+
+extern void releaseBuffer(void* ptr) {
+    delete ptr;
+}
+
+
+//
+//extern int DFSAlgWithPath(int startx, int starty, int endx, int endy, int with, int height) {
+//    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+//    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+//    DFS dfs = DFS(startPoint, endPoint);
+//    dfs.initSize(0, with, 0, height);
+//    return dfs.startFind();
+//}
+//extern int DFSAlgFindMinWithPath(int startx, int starty, int endx, int endy, int with, int height) {
+//    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+//    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+//    DFS dfs = DFS(startPoint, endPoint);
+//    dfs.initSize(0, with, 0, height);
+//    return dfs.doFindMin();
+//}
+//
+//extern int BFSAlgWithPath(int startx, int starty, int endx, int endy, int with, int height) {
+//    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+//    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+//
+//    BFS bfs = BFS(startPoint, endPoint);
+//    bfs.initSize(0, with, 0, height);
+//    return bfs.startFind();
+//}
+}
+
+long jiechen(int n) {
+    if (n == 1)
+        return 1;
+    return 1 * jiechen(n - 1);
+}
+
+void addPoint(vector<Point> &vect) {
+    for (int i = 0; i < 100; ++i) {
+        auto p = Point(1, 2, 1, 1, NULL);
+        vect.push_back(p);
+    }
+}
+
+//char *getKey(int x, int y) {
+//    char key[20];
+//    sprintf(key, "%d_%d", x, y);
+//    return key;
+//}
+
+bool am_little_endian() {
+    unsigned short i = 1;
+    return (int) *((char *) (&i)) ? true : false;
+}
+
+//unsigned char *getcharbyte(int num) {
+////    unsigned char* p = new unsigned char[20*4];
+//    unsigned char p[num * 4];
+//    srand(1);
+//    for (int i = 0; i < num; ++i) {
+////        int a = random(num);
+//        int a = 900;
+//        printf("random value:%d\n", a);
+//        auto temp = (unsigned char *) &a;
+//        for (int j = 0; j < 4; ++j) {
+//            p[i * 4 + j] = temp[j];
+//        }
+//    }
+//    return p;
+//}
+
+void test() {
+//    int num = 1;
+//    unsigned char* array = getcharbyte(num);
+//    for (int i = 0; i < num*5; ++i) {
+//        printf("testchar:%d\n",array[i]);
+//    }
+    //    vector<Point> vect;
+//    addPoint(vect);
+//    for (int i = 0; i < vect.size(); ++i) {
+//        printf("p:{%d,%d}",vect[i].x,vect[i].y);
+//    }
+//    long value = jiechen(1000000);
+//    cout<< value;
+
+//printf("%s\n",getKey(121,123));
+//printf("%s\n",getKey(121,123));
+//printf("%s\n",getKey(121,123));
+//printf("%s\n",getKey(1,1));
+
+//    if(am_little_endian())
+//    {
+//        printf("本机字节序为小段序!\n");
+//    }else
+//    {
+//        printf("本机字节序为大段序!\n");
+//    }
+//    unsigned int value = 1;
+//    unsigned char* charp = (unsigned char*)&value;
+//    printf("%d\n",charp[0]);
+//    printf("%d\n",charp[1]);
+//    printf("%d\n",charp[2]);
+//    printf("%d\n",charp[3]);
+}
+//
+int main(int argc, char const *argv[]) {
+
+    printf("AStartAlg:%d\n", AStartAlgWithTime(0, 0, 978, 998, 1000, 1000));
+    int time,pathStep;
+    AStartAlgWithPath(0, 0, 978, 998, 1000, 1000,&time,&pathStep);
+    printf("AStartAlg with time:%d and pathStep:%d\n", time,pathStep);
+    printf("DFSAlg:%d\n", DFSAlgWithTime(0, 0, 978, 500, 1000, 100));
+    printf("DFSAlgFindMin:%d\n", DFSAlgFindMinWithTime(0, 0, 978, 500, 1000, 100));
+    printf("BFSAlg:%d", BFSAlgWithTime(0, 0, 978, 998, 1000, 1000));
+//    test();
+}
+
+
 //    AStart start = AStart(startPoint,endPoint);
 //    start.initSize(0,1000,0,1000);
 //    start.startFind();
