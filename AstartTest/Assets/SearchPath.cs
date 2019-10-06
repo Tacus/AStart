@@ -124,38 +124,5 @@ public class SearchPath : MonoBehaviour
 	{
 
 	}
-//
-//	public static int decompressBuffer (byte[] source, int length, ref byte[] outBuffer, int bufferOffset)
-//	{
-//		GCHandle sbuf = GCHandle.Alloc (source, GCHandleType.Pinned);
-//		IntPtr ptr;
-//		int siz = 0;
-//
-//		ptr = zipDecompressBuffer (sbuf.AddrOfPinnedObject (), length, ref siz);
-//
-//		if (siz == 0 || ptr == IntPtr.Zero) {
-//			sbuf.Free ();
-//			releaseBuffer (ptr);
-//			return -1;
-//		}
-//
-//		var newBufferSize = siz;
-//		if (0 < bufferOffset) {
-//			newBufferSize += bufferOffset;
-//		}
-//		if (outBuffer.Length < newBufferSize) {
-//			var temp = new byte[newBufferSize];
-//			for (int i = 0; i < bufferOffset; ++i) {
-//				temp [i] = outBuffer [i];
-//			}
-//			outBuffer = temp;
-//		}
-//
-//		Marshal.Copy (ptr, outBuffer, 0, siz);
-//
-//		sbuf.Free ();
-//		releaseBuffer (ptr);
-//
-//		return siz;
-//	}
+
 }
