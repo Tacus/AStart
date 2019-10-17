@@ -6,7 +6,7 @@
 	<integer>10</integer>
 	<key>logs</key>
 	<dict>
-		<key>0119E32E-B6B3-40D4-AA02-A386A03A30D6</key>
+		<key>5A32DD50-F12E-4612-8EB2-08456DFCDF5D</key>
 		<dict>
 			<key>className</key>
 			<string>IDEActivityLogSection</string>
@@ -15,7 +15,143 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>0119E32E-B6B3-40D4-AA02-A386A03A30D6.xcactivitylog</string>
+			<string>5A32DD50-F12E-4612-8EB2-08456DFCDF5D.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>libzgb project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>libzgb</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build libzgb</string>
+			<key>timeStartedRecording</key>
+			<real>592932676.48472297</real>
+			<key>timeStoppedRecording</key>
+			<real>592932677.85065997</real>
+			<key>title</key>
+			<string>Build libzgb</string>
+			<key>uniqueIdentifier</key>
+			<string>5A32DD50-F12E-4612-8EB2-08456DFCDF5D</string>
+		</dict>
+		<key>682FE45B-8559-45EE-AF72-FB3F4AE8480D</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>682FE45B-8559-45EE-AF72-FB3F4AE8480D.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>libzgb project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>libzgb</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build libzgb</string>
+			<key>timeStartedRecording</key>
+			<real>592932877.63802397</real>
+			<key>timeStoppedRecording</key>
+			<real>592932879.35791099</real>
+			<key>title</key>
+			<string>Build libzgb</string>
+			<key>uniqueIdentifier</key>
+			<string>682FE45B-8559-45EE-AF72-FB3F4AE8480D</string>
+		</dict>
+		<key>6E1CA0F2-499F-45B7-A1DB-101881AF475B</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>6E1CA0F2-499F-45B7-A1DB-101881AF475B.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>libzgb project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>libzgb</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Clean libzgb</string>
+			<key>timeStartedRecording</key>
+			<real>592932409.70193303</real>
+			<key>timeStoppedRecording</key>
+			<real>592932409.81703806</real>
+			<key>title</key>
+			<string>Clean libzgb</string>
+			<key>uniqueIdentifier</key>
+			<string>6E1CA0F2-499F-45B7-A1DB-101881AF475B</string>
+		</dict>
+		<key>82C6DFE0-9343-406E-B544-8250DB94320D</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>82C6DFE0-9343-406E-B544-8250DB94320D.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>libzgb project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>libzgb</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build libzgb</string>
+			<key>timeStartedRecording</key>
+			<real>592932410.47003698</real>
+			<key>timeStoppedRecording</key>
+			<real>592932410.68994403</real>
+			<key>title</key>
+			<string>Build libzgb</string>
+			<key>uniqueIdentifier</key>
+			<string>82C6DFE0-9343-406E-B544-8250DB94320D</string>
+		</dict>
+		<key>84380CD9-6F2C-4753-AB24-9A7FD02474B0</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>84380CD9-6F2C-4753-AB24-9A7FD02474B0.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
@@ -32,13 +168,115 @@
 			<key>signature</key>
 			<string>Build libzgb</string>
 			<key>timeStartedRecording</key>
-			<real>592921919.00919199</real>
+			<real>592932898.13412094</real>
 			<key>timeStoppedRecording</key>
-			<real>592921919.05382204</real>
+			<real>592932899.53429306</real>
 			<key>title</key>
 			<string>Build libzgb</string>
 			<key>uniqueIdentifier</key>
-			<string>0119E32E-B6B3-40D4-AA02-A386A03A30D6</string>
+			<string>84380CD9-6F2C-4753-AB24-9A7FD02474B0</string>
+		</dict>
+		<key>96EC05A6-74A9-4EBC-A70D-AD74B1951AE8</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>96EC05A6-74A9-4EBC-A70D-AD74B1951AE8.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>libzgb project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>libzgb</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build libzgb</string>
+			<key>timeStartedRecording</key>
+			<real>592932328.974172</real>
+			<key>timeStoppedRecording</key>
+			<real>592932329.20952904</real>
+			<key>title</key>
+			<string>Build libzgb</string>
+			<key>uniqueIdentifier</key>
+			<string>96EC05A6-74A9-4EBC-A70D-AD74B1951AE8</string>
+		</dict>
+		<key>D52798BE-D940-449E-BD81-FAFA093CA807</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>D52798BE-D940-449E-BD81-FAFA093CA807.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>libzgb project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>libzgb</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build libzgb</string>
+			<key>timeStartedRecording</key>
+			<real>592932769.74427402</real>
+			<key>timeStoppedRecording</key>
+			<real>592932772.11105096</real>
+			<key>title</key>
+			<string>Build libzgb</string>
+			<key>uniqueIdentifier</key>
+			<string>D52798BE-D940-449E-BD81-FAFA093CA807</string>
+		</dict>
+		<key>DA532B0B-6EEF-4E68-B51D-E15F7A13DFF6</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>DA532B0B-6EEF-4E68-B51D-E15F7A13DFF6.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>libzgb project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>libzgb</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build libzgb</string>
+			<key>timeStartedRecording</key>
+			<real>592932403.64650905</real>
+			<key>timeStoppedRecording</key>
+			<real>592932403.88285697</real>
+			<key>title</key>
+			<string>Build libzgb</string>
+			<key>uniqueIdentifier</key>
+			<string>DA532B0B-6EEF-4E68-B51D-E15F7A13DFF6</string>
 		</dict>
 	</dict>
 </dict>

@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/Users/ganicus/develop/workspace/workspace_c++/AStart/Project/Astart.cpp
+/Users/ganicus/develop/workspace/workspace_c++/AStart/src/Astart.cpp
 iostream
 -
 vector

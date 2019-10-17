@@ -59,10 +59,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/ganicus/develop/workspace/workspace_c++/AStart/Project
+CMAKE_SOURCE_DIR = /Users/ganicus/develop/workspace/workspace_c++/AStart/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/ganicus/develop/workspace/workspace_c++/AStart/Project/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/ganicus/develop/workspace/workspace_c++/AStart/src/cmake-build-debug
 
 #=============================================================================
 # Target rules for target CMakeFiles/TestClock.dir
@@ -71,7 +71,7 @@ CMAKE_BINARY_DIR = /Users/ganicus/develop/workspace/workspace_c++/AStart/Project
 CMakeFiles/TestClock.dir/all:
 	$(MAKE) -f CMakeFiles/TestClock.dir/build.make CMakeFiles/TestClock.dir/depend
 	$(MAKE) -f CMakeFiles/TestClock.dir/build.make CMakeFiles/TestClock.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ganicus/develop/workspace/workspace_c++/AStart/Project/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target TestClock"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ganicus/develop/workspace/workspace_c++/AStart/src/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target TestClock"
 .PHONY : CMakeFiles/TestClock.dir/all
 
 # Include target in all.
@@ -81,9 +81,9 @@ all: CMakeFiles/TestClock.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/TestClock.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ganicus/develop/workspace/workspace_c++/AStart/Project/cmake-build-debug/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ganicus/develop/workspace/workspace_c++/AStart/src/cmake-build-debug/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/TestClock.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ganicus/develop/workspace/workspace_c++/AStart/Project/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ganicus/develop/workspace/workspace_c++/AStart/src/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/TestClock.dir/rule
 
 # Convenience name for target.

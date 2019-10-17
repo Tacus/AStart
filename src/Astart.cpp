@@ -216,12 +216,20 @@ protected:
     Point *m_StartPoint, *m_EndPoint;
     int minx, maxx, miny, maxy;
     int timeInMille;
-    int pathStep;
+    int pathStep = 0;
     const unsigned char* worldMap;
     unsigned int* pathMap;
 
 
 public:
+    
+//    SearchAlgorithm(const unsigned char*worldMap,unsigned int* pathMap,Point *startPoint, Point *endPoint) {
+//        m_StartPoint = startPoint;
+//        m_EndPoint = endPoint;
+//        this->worldMap = worldMap;
+//        this->pathMap = pathMap;
+//    }
+    
     virtual void initSize(const int minx, const int maxx, const int miny, const int maxy) = 0;
 
     virtual int startFind() {
@@ -312,23 +320,13 @@ public:
         }
 //        printf("~Astart\n");
     }
-
-    AStart(Point *startPoint, Point *endPoint) {
-        m_StartPoint = startPoint;
-        m_EndPoint = endPoint;
-    }
-
+    
     AStart(const unsigned char*worldMap,unsigned int* pathMap,Point *startPoint, Point *endPoint) {
-        m_StartPoint = startPoint;
-        m_EndPoint = endPoint;
-        this->worldMap = worldMap;
-        this->pathMap = pathMap;
-    }
-
-    AStart(int startx, int starty, int endx, int endy) {
-        m_StartPoint = new Point(startx, starty, 0, 0, NULL);
-        m_EndPoint = new Point(endx, endy, 0, 0, NULL);
-    }
+                m_StartPoint = startPoint;
+               m_EndPoint = endPoint;
+               this->worldMap = worldMap;
+               this->pathMap = pathMap;
+       }
 
     void initSize(const int minx, const int maxx, const int miny, const int maxy) {
         this->minx = minx;
@@ -431,10 +429,6 @@ private:
                           {0,  1},
                           {0,  -1}};
 public:
-    DFS(Point *startPoint, Point *endPoint) {
-        m_StartPoint = startPoint;
-        m_EndPoint = endPoint;
-    }
 
     ~DFS() {
         for (int i = 0; i < visited.size(); ++i) {
@@ -444,10 +438,13 @@ public:
 //        printf("~DFS\n");
     }
 
-    DFS(int startx, int starty, int endx, int endy) {
-        m_StartPoint = new Point(startx, starty, 0, 0, NULL);
-        m_EndPoint = new Point(endx, endy, 0, 0, NULL);
-    }
+    
+    DFS(const unsigned char*worldMap,unsigned int* pathMap,Point *startPoint, Point *endPoint) {
+            m_StartPoint = startPoint;
+                          m_EndPoint = endPoint;
+                          this->worldMap = worldMap;
+                          this->pathMap = pathMap;
+          }
 
     void initSize(const int minx, const int maxx, const int miny, const int maxy) {
         this->minx = minx;
@@ -489,7 +486,7 @@ public:
         for (int i = 0; i < stack.size(); ++i) {
             auto p = stack[i];
             addPoint2Array(&p, offset);
-            offset = (i + 1) * 8;
+            offset = (i + 1) * 2;
         }
     };
 
@@ -499,7 +496,7 @@ public:
         for (int i = 0; i < visited.size(); ++i) {
             auto p = visited[i];
             addPoint2Array(p, offset);
-            offset = (i + 1) * 8;
+            offset = (i + 1) * 2;
         }
     };
 
@@ -609,10 +606,6 @@ private:
                           {0,  1},
                           {0,  -1}};
 public:
-    BFS(Point *startPoint, Point *endPoint) {
-        m_StartPoint = startPoint;
-        m_EndPoint = endPoint;
-    }
 
     ~BFS() {
         for (int i = 0; i < cache.size(); ++i) {
@@ -620,6 +613,13 @@ public:
             delete p;
         }
     }
+    
+    BFS(const unsigned char*worldMap,unsigned int* pathMap,Point *startPoint, Point *endPoint){
+                    m_StartPoint = startPoint;
+                          m_EndPoint = endPoint;
+                          this->worldMap = worldMap;
+                          this->pathMap = pathMap;
+            }
 
     void initSize(const int minx, const int maxx, const int miny, const int maxy) {
         this->minx = minx;
@@ -679,37 +679,37 @@ int static getCurTimeInMille() {
 
 extern "C"
 {
-extern int AStartAlgWithTime(int startx, int starty, int endx, int endy, int width, int height) {
-    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
-    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
-    AStart start = AStart(startPoint, endPoint);
-    start.initSize(0, width, 0, height);
-    return start.startFind();
-}
-
-extern int DFSAlgWithTime(int startx, int starty, int endx, int endy, int with, int height) {
-    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
-    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
-    DFS dfs = DFS(startPoint, endPoint);
-    dfs.initSize(0, with, 0, height);
-    return dfs.startFind();
-}
-extern int DFSAlgFindMinWithTime(int startx, int starty, int endx, int endy, int with, int height) {
-    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
-    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
-    DFS dfs = DFS(startPoint, endPoint);
-    dfs.initSize(0, with, 0, height);
-    return dfs.doFindMin();
-}
-
-extern int BFSAlgWithTime(int startx, int starty, int endx, int endy, int with, int height) {
-    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
-    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
-
-    BFS bfs = BFS(startPoint, endPoint);
-    bfs.initSize(0, with, 0, height);
-    return bfs.startFind();
-}
+//extern int AStartAlgWithTime(int startx, int starty, int endx, int endy, int width, int height) {
+//    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+//    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+//    AStart start = AStart(startPoint, endPoint);
+//    start.initSize(0, width, 0, height);
+//    return start.startFind();
+//}
+//
+//extern int DFSAlgWithTime(int startx, int starty, int endx, int endy, int with, int height) {
+//    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+//    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+//    DFS dfs = DFS(startPoint, endPoint);
+//    dfs.initSize(0, with, 0, height);
+//    return dfs.startFind();
+//}
+//extern int DFSAlgFindMinWithTime(int startx, int starty, int endx, int endy, int with, int height) {
+//    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+//    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+//    DFS dfs = DFS(startPoint, endPoint);
+//    dfs.initSize(0, with, 0, height);
+//    return dfs.doFindMin();
+//}
+//
+//extern int BFSAlgWithTime(int startx, int starty, int endx, int endy, int with, int height) {
+//    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+//    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+//
+//    BFS bfs = BFS(startPoint, endPoint);
+//    bfs.initSize(0, with, 0, height);
+//    return bfs.startFind();
+//}
 //
 extern unsigned int
 AStartAlgWithPath(const unsigned char*worlMap, unsigned int*pathMap,  int startx, int starty, int endx, int endy, int width, int height, int *time) {
@@ -724,38 +724,41 @@ AStartAlgWithPath(const unsigned char*worlMap, unsigned int*pathMap,  int startx
     return start.getPathStep();
 }
 
-extern void
-DFSAlgWithPath(const unsigned char*worlMap, int startx, int starty, int endx, int endy, int width, int height, int *time) {
-//    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
-//    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
-//    DFS dfs = DFS(startPoint, endPoint);
-//    dfs.initSize(0, width, 0, height);
-//    dfs.startFind();
-//    unsigned char *path = dfs.getPath();
-//    *time = dfs.getElapse();
+extern int
+DFSAlgWithPath(const unsigned char*worlMap, unsigned int*pathMap, int startx, int starty, int endx, int endy, int width, int height, int *time) {
+    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+    DFS dfs = DFS(worlMap,pathMap,startPoint, endPoint);
+    dfs.initSize(0, width, 0, height);
+    dfs.startFind();
+    dfs.getPath();
+    *time = dfs.getElapse();
+    return dfs.getPathStep();
 }
 
-extern void
-DFSAlgWithMinPath(const unsigned char*worlMap,int startx, int starty, int endx, int endy, int width, int height, int *time) {
-//    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
-//    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
-//    DFS dfs = DFS(startPoint, endPoint);
-//    dfs.initSize(0, width, 0, height);
-//    dfs.doFindMin();
-//    unsigned char *path = dfs.getMinPath();
-//    *time = dfs.getElapse();
+extern int
+DFSAlgWithMinPath(const unsigned char*worlMap, unsigned int*pathMap, int startx, int starty, int endx, int endy, int width, int height, int *time) {
+    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+    DFS dfs = DFS(worlMap,pathMap,startPoint, endPoint);
+    dfs.initSize(0, width, 0, height);
+    dfs.doFindMin();
+    dfs.getMinPath();
+    *time = dfs.getElapse();
+    return dfs.getPathStep();
 }
 
-extern void
-BFSAlgWithPath(const unsigned char*worlMap,int startx, int starty, int endx, int endy, int with, int height, int *time) {
-//    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
-//    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
-//
-//    BFS bfs = BFS(startPoint, endPoint);
-//    bfs.initSize(0, with, 0, height);
-//    bfs.startFind();
-//    unsigned char *path = bfs.getPath();
-//    *time = bfs.getElapse();
+extern int
+BFSAlgWithPath(const unsigned char*worlMap, unsigned int*pathMap, int startx, int starty, int endx, int endy, int with, int height, int *time) {
+    Point *startPoint = new Point(startx, starty, 0, 0, NULL);
+    Point *endPoint = new Point(endx, endy, 0, 0, NULL);
+
+    BFS bfs = BFS(worlMap,pathMap,startPoint, endPoint);
+    bfs.initSize(0, with, 0, height);
+    bfs.startFind();
+    bfs.getPath();
+    *time = bfs.getElapse();
+    return bfs.getPathStep();
 }
 extern void releaseBuffer(unsigned char *ptr) {
     delete ptr;
@@ -839,7 +842,7 @@ void test() {
 //
 //int main(int argc, char const *argv[]) {
 //
-//    int time, pathStep;
+//}//    int time, pathStep;
 //    DFSAlgWithMinPath(0, 0, 98, 98, 100, 100, &time, &pathStep);
 //    DFSAlgWithMinPath(0, 0, 7, 7, 10, 10, &time, &pathStep);
 //    printf("DFSAlgWithMinPath with time:%d and pathStep:%d\n", time, pathStep);

@@ -6,6 +6,34 @@
 	<integer>10</integer>
 	<key>logs</key>
 	<dict>
+		<key>28325F17-9134-4155-A45F-08B1D26E4B98</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogMajorGroupSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.target.product-type.bundle</string>
+			<key>fileName</key>
+			<string>28325F17-9134-4155-A45F-08B1D26E4B98.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+			</dict>
+			<key>signature</key>
+			<string>libzgb-bypgytmyvcbfvcaknklkgvxfjwar</string>
+			<key>timeStartedRecording</key>
+			<real>592932898.24942505</real>
+			<key>timeStoppedRecording</key>
+			<real>592932899.52654898</real>
+			<key>title</key>
+			<string>Build target libzgb</string>
+			<key>uniqueIdentifier</key>
+			<string>28325F17-9134-4155-A45F-08B1D26E4B98</string>
+		</dict>
 		<key>79459BA5-A5B1-4F8F-868E-45DA27D39DF8</key>
 		<dict>
 			<key>className</key>

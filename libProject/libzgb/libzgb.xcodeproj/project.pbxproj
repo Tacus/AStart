@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BAFA21B023574502009C8FEC /* Astart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BAFA21AF23574502009C8FEC /* Astart.cpp */; };
+		BA8F8CAC235764EB00265C4F /* Astart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BA8F8CAB235764EB00265C4F /* Astart.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BA8F8CAB235764EB00265C4F /* Astart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Astart.cpp; path = ../../../src/Astart.cpp; sourceTree = "<group>"; };
 		BAFA21A6235744E2009C8FEC /* libzgb.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = libzgb.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAFA21A9235744E2009C8FEC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BAFA21AF23574502009C8FEC /* Astart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Astart.cpp; path = "../../../../workspace_c++/AStart/Project/Astart.cpp"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,7 +46,7 @@
 		BAFA21A8235744E2009C8FEC /* libzgb */ = {
 			isa = PBXGroup;
 			children = (
-				BAFA21AF23574502009C8FEC /* Astart.cpp */,
+				BA8F8CAB235764EB00265C4F /* Astart.cpp */,
 				BAFA21A9235744E2009C8FEC /* Info.plist */,
 			);
 			path = libzgb;
@@ -119,7 +119,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BAFA21B023574502009C8FEC /* Astart.cpp in Sources */,
+				BA8F8CAC235764EB00265C4F /* Astart.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +246,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = xd.com.libzgb;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SYMROOT = ../../unityProject/Assets/Plugins/;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
@@ -261,6 +262,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = xd.com.libzgb;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SYMROOT = ../../unityProject/Assets/Plugins/;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;

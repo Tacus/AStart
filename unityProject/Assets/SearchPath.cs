@@ -19,13 +19,13 @@ public class SearchPath : MonoBehaviour
 	[DllImport (libname)]
 	public static extern int AStartAlgWithPath (byte[]worldMap,uint[]pathMap, int startx,int starty,int endx,int endy,int with,int height,out int time);
 	[DllImport (libname)]
-	public static extern IntPtr DFSAlgWithPath (int startx,int starty,int endx,int endy,int with,int height,out int time,out int size);
+	public static extern int DFSAlgWithPath (byte[]worldMap,uint[]pathMap, int startx,int starty,int endx,int endy,int with,int height,out int time);
 
 	[DllImport (libname)]
-	public static extern IntPtr DFSAlgWithMinPath (int startx,int starty,int endx,int endy,int with,int height,out int time,out int size);
+	public static extern int DFSAlgWithMinPath (byte[]worldMap,uint[]pathMap, int startx,int starty,int endx,int endy,int with,int height,out int time);
 
 	[DllImport (libname)]
-	public static extern IntPtr BFSAlgWithPath (int startx,int starty,int endx,int endy,int with,int height,out int time,out int size);
+	public static extern int BFSAlgWithPath (byte[]worldMap,uint[]pathMap, int startx,int starty,int endx,int endy,int with,int height,out int time);
 
 
 	[DllImport (libname)]
@@ -97,7 +97,12 @@ public class SearchPath : MonoBehaviour
 
 	public static byte[] getWorldMap(int width,int height)
 	{
-		byte[] worldMap = new byte[width*height];
+		int size = width * height;
+		byte[] worldMap = new byte[size];
+		for (int i = 0; i < size; i++) {
+			worldMap [i] = 1;
+		}
+
 		return worldMap;
 	}
 
@@ -108,46 +113,41 @@ public class SearchPath : MonoBehaviour
 		int time, size;
 		if (GUI.Button (new Rect (30,200, 200, 100), astartvalue)) {
 			byte[] worldMap = getWorldMap (width,height);
-
 			uint[] pathMap = new uint[width * height];
-
 			int pathStep = AStartAlgWithPath (worldMap,pathMap,startx, starty, endx, endy, width, height,out time);
 			astartvalue = string.Format ("A* time:{0},path step:{1}" ,time,pathStep);
 			pathString = getPath(pathMap,pathStep);
 		}
 
 		if (GUI.Button (new Rect (400, 200, 200, 100), dfsvalue)) {
-			IntPtr ptr = DFSAlgWithPath (startx, starty, endx, endy, width, height,out time,out size);
-			dfsvalue = string.Format ("DFS time:{0},path step:{1}" ,time,size);
-			pathString = getPath(ptr,size);
+			byte[] worldMap = getWorldMap (width,height);
+			uint[] pathMap = new uint[width * height];
+			int pathStep = DFSAlgWithPath (worldMap,pathMap,startx, starty, endx, endy, width, height,out time);
+			dfsvalue = string.Format ("DFS time:{0},path step:{1}" ,time,pathStep);
+			pathString = getPath(pathMap,pathStep);
 		}
 
 		if (GUI.Button (new Rect (400, 400, 200, 100), dfsMinvalue)) {
-			IntPtr ptr = DFSAlgWithMinPath (startx, starty, endx, endy, width, height,out time,out size);
-			dfsMinvalue = string.Format ("DFS(Min) time:{0},path step:{1}" ,time,size);
-			pathString = getPath(ptr,size);
+			byte[] worldMap = getWorldMap (width,height);
+			uint[] pathMap = new uint[width * height];
+			int pathStep = DFSAlgWithMinPath (worldMap,pathMap,startx, starty, endx, endy, width, height,out time);
+			dfsMinvalue = string.Format ("DFS(Min) time:{0},path step:{1}" ,time,pathStep);
+			pathString = getPath(pathMap,pathStep);
 		}
 
 		if (GUI.Button (new Rect (800, 200, 200, 100), bfsvalue)) {
-			IntPtr ptr = BFSAlgWithPath (startx, starty, endx, endy, width, height,out time,out size);
-			bfsvalue = string.Format ("BFS time:{0},path step:{1}" ,time,size);
-			pathString = getPath(ptr,size);
+			byte[] worldMap = getWorldMap (width,height);
+			uint[] pathMap = new uint[width * height];
+			int pathStep = BFSAlgWithPath (worldMap,pathMap,startx, starty, endx, endy, width, height,out time);
+			bfsvalue = string.Format ("BFS time:{0},path step:{1}" ,time,pathStep);
+			pathString = getPath(pathMap,pathStep);
 		}
 
 		float cx = 0;
 		float cy = (float)(Screen.height*0.6);
 		float textHeight = (float)(Screen.height * 0.4);
 		Rect mid = new Rect(cx,cy,Screen.width,textHeight);
-//		var style = new GUIStyle ();
-//		style.fontSize = 20;
-//		style.stretchHeight = true;
-//		style.stretchWidth = true;
 		GUI.TextArea(mid,pathString);
-
-//		if (GUI.Button (new Rect (400, 100, 200, 100), testvalue)) {
-//			string time = AVPGetVersion  ();
-//			testvalue = string.Format ("AVPGetVersion:{0}" , time);
-//		}
 	}
 	void Start()
 	{
